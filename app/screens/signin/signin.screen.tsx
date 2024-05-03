@@ -4,6 +4,7 @@ import { InputField } from '../../components/input.field';
 import { sharedStyles } from '../../assets/styles/shared.styles';
 import { Title } from '../../components/title';
 import { Button } from '../../components/button';
+import { GoogleSignIn } from '../../components/google.signin';
 
 export const SigninScreen = () => {
     const [email, setEmail] = useState('');
@@ -14,6 +15,7 @@ export const SigninScreen = () => {
             <InputField value={email} onChangeText={setEmail} />
             <InputField value={password} onChangeText={setPassword} />
             <Button title="Log in" />
+            <GoogleSignIn />
         </SafeAreaView>
     );
 };
