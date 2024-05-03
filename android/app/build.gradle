@@ -75,9 +75,9 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace "com.awesomechatapp"
+    namespace "dk.swag.awesomechatapp"
     defaultConfig {
-        applicationId "com.awesomechatapp"
+        applicationId "dk.swag.awesomechatapp"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

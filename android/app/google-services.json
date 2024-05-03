@@ -1,46 +1,46 @@
 {
-    "project_info": {
-        "project_number": "795725916590",
-        "project_id": "chat-app-cedaf",
-        "storage_bucket": "chat-app-cedaf.appspot.com"
-    },
-    "client": [
-        {
-            "client_info": {
-                "mobilesdk_app_id": "1:795725916590:android:b5158d04d08473540b803f",
-                "android_client_info": {
-                    "package_name": "com.awesomechatapp"
-                }
-            },
-            "oauth_client": [
-                {
-                    "client_id": "795725916590-3n0gnd29p2mstkbmr7rcr21uev7rmg3i.apps.googleusercontent.com",
-                    "client_type": 3
-                }
-            ],
-            "api_key": [
-                {
-                    "current_key": "AIzaSyAhYtbor2hzvj3uHxIkANlWesuLkVgL-QY"
-                }
-            ],
-            "services": {
-                "appinvite_service": {
-                    "other_platform_oauth_client": [
-                        {
-                            "client_id": "795725916590-3n0gnd29p2mstkbmr7rcr21uev7rmg3i.apps.googleusercontent.com",
-                            "client_type": 3
-                        },
-                        {
-                            "client_id": "795725916590-3h7ld37rrc43ragnl9ne2ji3r5vsh84i.apps.googleusercontent.com",
-                            "client_type": 2,
-                            "ios_info": {
-                                "bundle_id": "org.reactjs.native.example.awesomechatapp"
-                            }
-                        }
-                    ]
-                }
-            }
+  "project_info": {
+    "project_number": "795725916590",
+    "project_id": "chat-app-cedaf",
+    "storage_bucket": "chat-app-cedaf.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:795725916590:android:9d621ad2c15c455b0b803f",
+        "android_client_info": {
+          "package_name": "dk.swag.awesomechatapp"
         }
-    ],
-    "configuration_version": "1"
+      },
+      "oauth_client": [
+        {
+          "client_id": "795725916590-3n0gnd29p2mstkbmr7rcr21uev7rmg3i.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAhYtbor2hzvj3uHxIkANlWesuLkVgL-QY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "795725916590-3n0gnd29p2mstkbmr7rcr21uev7rmg3i.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "795725916590-3h7ld37rrc43ragnl9ne2ji3r5vsh84i.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "org.reactjs.native.example.awesomechatapp"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
 }

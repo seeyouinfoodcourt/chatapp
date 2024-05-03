@@ -1,4 +1,4 @@
-package com.awesomechatapp
+package dk.swag.awesomechatapp
 
 import com.facebook.react.ReactActivity
 import com.facebook.react.ReactActivityDelegate
