@@ -27,7 +27,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     };
     const [userCredentials, setUserCredentials] =
         useState<FirebaseAuthTypes.User | null>(null);
-    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
 
     // Handle user state changes
     const onAuthStateChanged = (user: FirebaseAuthTypes.User | null) => {
