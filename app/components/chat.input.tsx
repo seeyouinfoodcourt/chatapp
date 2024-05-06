@@ -7,7 +7,11 @@ import {
 } from 'react-native';
 import React, { useState } from 'react';
 
-export const ChatInput = () => {
+type ChatInputProps = {
+    onSend: (message: string) => void;
+};
+
+export const ChatInput = ({ onSend }: ChatInputProps) => {
     const [text, setText] = useState('');
     return (
         <View style={styles.container}>
@@ -20,7 +24,7 @@ export const ChatInput = () => {
             />
             <TouchableWithoutFeedback
                 style={styles.sendIcon}
-                onPress={() => console.log('pressed the button')}>
+                onPress={() => onSend(text)}>
                 <Text>{'>'}</Text>
             </TouchableWithoutFeedback>
         </View>
