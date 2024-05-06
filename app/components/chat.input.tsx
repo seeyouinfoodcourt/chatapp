@@ -1,4 +1,10 @@
-import { View, Text, TextInput, StyleSheet } from 'react-native';
+import {
+    View,
+    Text,
+    TextInput,
+    StyleSheet,
+    TouchableWithoutFeedback,
+} from 'react-native';
 import React, { useState } from 'react';
 
 export const ChatInput = () => {
@@ -9,11 +15,14 @@ export const ChatInput = () => {
                 style={styles.input}
                 placeholder="Start typing..."
                 value={text}
+                multiline
                 onChangeText={newText => setText(newText)}
             />
-            <View style={styles.sendIcon}>
+            <TouchableWithoutFeedback
+                style={styles.sendIcon}
+                onPress={() => console.log('pressed the button')}>
                 <Text>{'>'}</Text>
-            </View>
+            </TouchableWithoutFeedback>
         </View>
     );
 };
@@ -22,7 +31,6 @@ const styles = StyleSheet.create({
     container: {
         paddingHorizontal: 16,
         backgroundColor: '#fff',
-        height: 40,
         borderRadius: 24,
         flexDirection: 'row',
     },
