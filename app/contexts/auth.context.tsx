@@ -1,14 +1,15 @@
-import { ReactNode, createContext, useContext, useState } from 'react';
-
-type UserCredentials = {
-    id: number;
-    name: string;
-    email: string;
-};
+import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth';
+import {
+    ReactNode,
+    createContext,
+    useContext,
+    useEffect,
+    useState,
+} from 'react';
 
 type AuthContext = {
     isLoading: boolean;
-    userCredentials: UserCredentials | null;
+    userCredentials: FirebaseAuthTypes.User | null;
     clearCredentials: () => void;
 };
 
@@ -25,8 +26,19 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         email: 'broder@salsa.dk',
     };
     const [userCredentials, setUserCredentials] =
-        useState<UserCredentials | null>(null);
+        useState<FirebaseAuthTypes.User | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(false);
+
+    // Handle user state changes
+    const onAuthStateChanged = (user: FirebaseAuthTypes.User | null) => {
+        setUserCredentials(user);
+        if (isLoading) setIsLoading(false);
+    };
+
+    useEffect(() => {
+        const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
+        return subscriber; // unsubscribe on unmount
+    }, []);
 
     const clearCredentials = () => {
         setUserCredentials(null);
