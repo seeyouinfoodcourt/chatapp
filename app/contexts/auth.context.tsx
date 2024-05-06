@@ -10,7 +10,7 @@ import {
 type AuthContext = {
     isLoading: boolean;
     userCredentials: FirebaseAuthTypes.User | null;
-    clearCredentials: () => void;
+    signOut: () => void;
 };
 
 type AuthProviderProps = {
@@ -20,11 +20,6 @@ type AuthProviderProps = {
 const AuthContext = createContext({} as AuthContext);
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
-    const mockdata = {
-        id: 666,
-        name: 'Broder Salsa',
-        email: 'broder@salsa.dk',
-    };
     const [userCredentials, setUserCredentials] =
         useState<FirebaseAuthTypes.User | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -36,16 +31,23 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     };
 
     useEffect(() => {
+        console.log('auth useeffect');
         const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
         return subscriber; // unsubscribe on unmount
     }, []);
 
-    const clearCredentials = () => {
-        setUserCredentials(null);
+    const signOut = () => {
+        auth()
+            .signOut()
+            .then(() => console.log('User signed out!'));
     };
     return (
         <AuthContext.Provider
-            value={{ isLoading, userCredentials, clearCredentials }}>
+            value={{
+                isLoading,
+                userCredentials,
+                signOut,
+            }}>
             {children}
         </AuthContext.Provider>
     );
