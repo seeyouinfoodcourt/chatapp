@@ -20,9 +20,9 @@ type AuthProviderProps = {
 const AuthContext = createContext({} as AuthContext);
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
+    const [isLoading, setIsLoading] = useState<boolean>(true);
     const [userCredentials, setUserCredentials] =
         useState<FirebaseAuthTypes.User | null>(null);
-    const [isLoading, setIsLoading] = useState<boolean>(true);
 
     // Handle user state changes
     const onAuthStateChanged = (user: FirebaseAuthTypes.User | null) => {
