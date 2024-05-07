@@ -5,7 +5,14 @@ import { AppStackParamList } from '../../navigators/navigation.types';
 import { ChatInput } from '../../components/chat.input';
 import data from '../../data/mock.json';
 import { ChatFeed } from '../../components/chat.feed';
-import auth from '@react-native-firebase/auth';
+import auth, { firebase } from '@react-native-firebase/auth';
+
+type Message = {
+    id: string;
+    author: string;
+    message: string;
+    createdAt?: string;
+};
 
 type ChatRoomScreenProps = {
     navigation: NavigationProp<AppStackParamList>;
@@ -15,10 +22,31 @@ type ChatRoomScreenProps = {
 export const ChatRoomScreen = ({ navigation, route }: ChatRoomScreenProps) => {
     const { roomId, name } = route.params ?? {};
     const user = auth().currentUser;
-    const [messages, setMessages] = useState(data.messages);
+    const [messages, setMessages] = useState<Message[]>([]);
+
+    useEffect(() => {
+        const fetchMessages = async () => {
+            const messages = await firebase
+                .firestore()
+                .collection('rooms')
+                .doc(roomId)
+                .collection('messages')
+                .get();
+
+            const messageData = messages.docs.map(doc => ({
+                id: doc.id,
+                author: doc.data().author,
+                message: doc.data().message,
+            }));
+
+            setMessages(messageData);
+        };
+        fetchMessages();
+    }, []);
 
     const sendMessage = (message: string) => {
         console.log(message);
+
         const newMessage = {
             id: 12,
             message: message,
@@ -26,7 +54,15 @@ export const ChatRoomScreen = ({ navigation, route }: ChatRoomScreenProps) => {
             timeStamp: '16:32',
         };
 
-        setMessages([...messages, newMessage]);
+        const docRef = firebase
+            .firestore()
+            .collection('rooms')
+            .doc(roomId)
+            .collection('messages')
+            .add(newMessage)
+            .then(() => console.log('Message added'));
+
+        // setMessages([...messages, newMessage]);
     };
 
     return (
