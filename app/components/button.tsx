@@ -1,4 +1,11 @@
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import {
+    View,
+    Text,
+    TouchableOpacity,
+    StyleSheet,
+    StyleProp,
+    ViewStyle,
+} from 'react-native';
 import React from 'react';
 
 type ButtonProps = {
@@ -17,7 +24,9 @@ export const Button = ({ title, onPress }: ButtonProps) => {
 const styles = StyleSheet.create({
     button: {
         backgroundColor: 'orange',
-        padding: 8,
+        padding: 16,
+        borderRadius: 16,
+        marginVertical: 8,
     },
     buttonText: {
         fontWeight: 'bold',

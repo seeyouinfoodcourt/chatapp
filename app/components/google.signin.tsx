@@ -1,8 +1,9 @@
 import React from 'react';
-import { Button } from 'react-native';
 
 import auth from '@react-native-firebase/auth';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import { Button } from './button';
+import { StyleSheet } from 'react-native';
 
 export function GoogleSignInButton() {
     async function onGoogleButtonPress() {
