@@ -1,11 +1,4 @@
-import {
-    View,
-    Text,
-    StyleSheet,
-    TextProps,
-    StyleProp,
-    TextStyle,
-} from 'react-native';
+import { View, Text, StyleProp, TextStyle } from 'react-native';
 import React from 'react';
 
 type TitleProps = {
@@ -16,7 +9,16 @@ type TitleProps = {
 export const Title = ({ title, style }: TitleProps) => {
     return (
         <View style={{ alignItems: 'center', marginVertical: 8 }}>
-            <Text style={[{ fontSize: 24, fontWeight: 'bold' }, style]}>
+            <Text
+                style={[
+                    {
+                        fontSize: 24,
+                        fontWeight: 'bold',
+                        textAlign: 'center',
+                        textTransform: 'uppercase',
+                    },
+                    style,
+                ]}>
                 {title}
             </Text>
         </View>
