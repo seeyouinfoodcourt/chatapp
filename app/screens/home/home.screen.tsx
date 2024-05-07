@@ -8,6 +8,7 @@ import { NavigationProp } from '@react-navigation/native';
 import { AppStackParamList } from '../../navigators/navigation.types';
 import firestore from '@react-native-firebase/firestore';
 import { ChatListCard } from '../../components/chat.list.card';
+import { sharedStyles } from '../../assets/styles/shared.styles';
 
 type Room = {
     id: string;
@@ -65,7 +66,7 @@ export const HomeScreen = ({ navigation }: HomeScreenProps) => {
     };
 
     return (
-        <SafeAreaView>
+        <SafeAreaView style={sharedStyles.container}>
             <FlatList
                 data={rooms}
                 renderItem={({ item }) => (
