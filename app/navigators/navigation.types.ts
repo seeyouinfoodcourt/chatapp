@@ -12,5 +12,5 @@ export type AuthStackParamList = {
 
 export type AppStackParamList = {
     Home: undefined;
-    Chatroom: { roomId: number; name: string };
+    Chatroom: { roomId: string; name: string };
 };

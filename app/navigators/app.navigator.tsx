@@ -10,7 +10,13 @@ export const AppNavigator = () => {
     return (
         <Stack.Navigator>
             <Stack.Screen name="Home" component={HomeScreen} />
-            <Stack.Screen name="Chatroom" component={ChatRoomScreen} />
+            <Stack.Screen
+                name="Chatroom"
+                component={ChatRoomScreen}
+                options={({ route }) => ({
+                    title: route.params.name,
+                })}
+            />
         </Stack.Navigator>
     );
 };
