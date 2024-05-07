@@ -1,0 +1,52 @@
+{
+    "messages": [
+        {
+            "id": 1,
+            "message": "Virkelig spændende",
+            "author": "Broder Salsa",
+            "timeStamp": "13:45"
+        },
+        {
+            "id": 2,
+            "message": "Det er helt utroligt",
+            "author": "Satan",
+            "timeStamp": "13:50"
+        },
+        {
+            "id": 3,
+            "message": "Hvem kommer til festen?",
+            "author": "Broder Salsa",
+            "timeStamp": "13:55"
+        },
+        {
+            "id": 4,
+            "message": "Kommer der nogen overhovedet?",
+            "author": "Broder Salsa",
+            "timeStamp": "14:45"
+        },
+        {
+            "id": 5,
+            "message": "Det ved jeg ikke",
+            "author": "Satan",
+            "timeStamp": "14:46"
+        },
+        {
+            "id": 6,
+            "message": "Hvad snakker i om?",
+            "author": "Anonym Hest",
+            "timeStamp": "14:51"
+        },
+        {
+            "id": 7,
+            "message": "Ikke noget vigtigt",
+            "author": "Broder Salsa",
+            "timeStamp": "14:52"
+        },
+        {
+            "id": 8,
+            "message": "Vi snakker om det",
+            "author": "Satan",
+            "timeStamp": "14:52"
+        }
+    ]
+}
