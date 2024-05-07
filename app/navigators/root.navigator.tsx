@@ -11,6 +11,7 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export const RootNavigator = () => {
     const authContext = useAuthContext();
+
     return (
         <NavigationContainer>
             {authContext.isLoading ? (
@@ -29,10 +30,18 @@ export const RootNavigator = () => {
                     }}>
                     {authContext.userCredentials == null ? (
                         // No credential found, user isn't signed in
-                        <Stack.Screen name="Auth" component={AuthNavigator} />
+                        <Stack.Screen
+                            name="Auth"
+                            component={AuthNavigator}
+                            options={{ animation: 'fade' }}
+                        />
                     ) : (
                         // User is signed in
-                        <Stack.Screen name="App" component={AppNavigator} />
+                        <Stack.Screen
+                            name="App"
+                            component={AppNavigator}
+                            options={{ animation: 'fade' }}
+                        />
                     )}
                 </Stack.Navigator>
             )}
