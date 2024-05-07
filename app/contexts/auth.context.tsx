@@ -7,6 +7,7 @@ import {
     useEffect,
     useState,
 } from 'react';
+import { Alert } from 'react-native';
 
 type AuthContext = {
     isLoading: boolean;
@@ -38,11 +39,28 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }, []);
 
     const signOut = () => {
-        auth()
-            .signOut()
-            .then(() => console.log('User signed out!'));
+        const handleSignOut = () => {
+            auth()
+                .signOut()
+                .then(() => console.log('User signed out!'));
 
-        GoogleSignin.revokeAccess();
+            if (
+                auth().currentUser?.providerData[0].providerId === 'google.com'
+            ) {
+                GoogleSignin.revokeAccess();
+            }
+        };
+        Alert.alert('Byeee', 'Do you wish to sign out?', [
+            {
+                text: 'Cancel',
+                style: 'cancel',
+            },
+            {
+                text: 'Sign out',
+                onPress: () => handleSignOut(),
+                style: 'destructive',
+            },
+        ]);
     };
     return (
         <AuthContext.Provider
