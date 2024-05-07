@@ -1,4 +1,5 @@
 import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import {
     ReactNode,
     createContext,
@@ -40,6 +41,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         auth()
             .signOut()
             .then(() => console.log('User signed out!'));
+
+        GoogleSignin.revokeAccess();
     };
     return (
         <AuthContext.Provider
