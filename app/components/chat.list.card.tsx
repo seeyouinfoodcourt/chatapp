@@ -1,5 +1,6 @@
 import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import React from 'react';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 type ChatListCardProps = {
     name: string;
@@ -16,7 +17,9 @@ export const ChatListCard = ({ name, onPress }: ChatListCardProps) => {
                     This is a placeholder message
                 </Text>
             </View>
-            <Text style={styles.chevron}>{'>'}</Text>
+            <View style={styles.chevron}>
+                <Icon name="chevron-right" size={40} />
+            </View>
         </TouchableOpacity>
     );
 };
@@ -43,5 +46,7 @@ const styles = StyleSheet.create({
         marginBottom: 2,
     },
     lastMessage: {},
-    chevron: {},
+    chevron: {
+        marginLeft: 'auto',
+    },
 });
