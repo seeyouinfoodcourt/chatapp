@@ -1,4 +1,11 @@
-import { View, Text, FlatList } from 'react-native';
+import {
+    View,
+    Text,
+    FlatList,
+    ScrollView,
+    RefreshControl,
+    StyleSheet,
+} from 'react-native';
 import auth from '@react-native-firebase/auth';
 import React, { useEffect, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -21,26 +28,27 @@ type HomeScreenProps = {
 
 export const HomeScreen = ({ navigation }: HomeScreenProps) => {
     const [rooms, setRooms] = useState<Room[]>([]);
-    const user = auth().currentUser;
     const { signOut } = useAuthContext();
 
+    const [refreshing, setRefreshing] = React.useState(false);
+
+    const fetchRooms = async () => {
+        const rooms = await firestore().collection('rooms').get();
+        const roomData = rooms.docs.map(doc => ({
+            id: doc.id,
+            name: doc.data().name,
+        }));
+        setRefreshing(false);
+        setRooms(roomData);
+    };
+
     useEffect(() => {
-        const fetchRooms = async () => {
-            const rooms = await firestore().collection('rooms').get();
-            const roomData = rooms.docs.map(doc => ({
-                id: doc.id,
-                name: doc.data().name,
-            }));
-
-            setRooms(roomData);
-        };
-
         fetchRooms();
     }, []);
 
-    useEffect(() => {
-        console.log(rooms);
-    }, [rooms]);
+    // useEffect(() => {
+    //     console.log(rooms);
+    // }, [rooms]);
 
     const createDb = () => {
         const db = firestore();
@@ -68,7 +76,10 @@ export const HomeScreen = ({ navigation }: HomeScreenProps) => {
     return (
         <SafeAreaView style={sharedStyles.container}>
             <FlatList
+                style={styles.roomList}
                 data={rooms}
+                refreshing={refreshing}
+                onRefresh={fetchRooms}
                 renderItem={({ item }) => (
                     <ChatListCard
                         name={item.name}
@@ -83,11 +94,14 @@ export const HomeScreen = ({ navigation }: HomeScreenProps) => {
                 keyExtractor={item => item.id}
             />
             <View>
-                <Text>HomeScreen</Text>
-                <Text>Email: {user?.email}</Text>
                 <Button title="Sign out" onPress={signOut} />
-                <Button title="gsfd" onPress={createDb} />
             </View>
         </SafeAreaView>
     );
 };
+
+const styles = StyleSheet.create({
+    roomList: {
+        borderWidth: 1,
+    },
+});
