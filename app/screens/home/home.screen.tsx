@@ -102,6 +102,6 @@ export const HomeScreen = ({ navigation }: HomeScreenProps) => {
 
 const styles = StyleSheet.create({
     roomList: {
-        borderWidth: 1,
+        // borderWidth: 1,
     },
 });
