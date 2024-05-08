@@ -6,7 +6,7 @@ import {
     TouchableWithoutFeedback,
     Pressable,
 } from 'react-native';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 type ChatInputProps = {
@@ -15,6 +15,24 @@ type ChatInputProps = {
 
 export const ChatInput = ({ onSend }: ChatInputProps) => {
     const [text, setText] = useState('');
+    const [enableSend, setEnableSend] = useState(false);
+
+    const handleSend = () => {
+        if (!enableSend) {
+            return;
+        }
+        onSend(text);
+        setText('');
+    };
+
+    useEffect(() => {
+        if (text) {
+            setEnableSend(true);
+        } else {
+            setEnableSend(false);
+        }
+    }, [text]);
+
     return (
         <View style={styles.container}>
             <TextInput
@@ -24,8 +42,12 @@ export const ChatInput = ({ onSend }: ChatInputProps) => {
                 multiline
                 onChangeText={newText => setText(newText)}
             />
-            <Pressable style={styles.sendIcon} onPress={() => onSend(text)}>
-                <Icon name="send" size={30} />
+            <Pressable style={styles.sendIcon} onPress={() => handleSend()}>
+                <Icon
+                    name="send"
+                    size={30}
+                    color={enableSend ? 'orange' : 'grey'}
+                />
             </Pressable>
         </View>
     );
