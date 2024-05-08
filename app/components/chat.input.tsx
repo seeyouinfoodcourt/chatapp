@@ -4,8 +4,10 @@ import {
     TextInput,
     StyleSheet,
     TouchableWithoutFeedback,
+    Pressable,
 } from 'react-native';
 import React, { useState } from 'react';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 type ChatInputProps = {
     onSend: (message: string) => void;
@@ -22,11 +24,9 @@ export const ChatInput = ({ onSend }: ChatInputProps) => {
                 multiline
                 onChangeText={newText => setText(newText)}
             />
-            <TouchableWithoutFeedback
-                style={styles.sendIcon}
-                onPress={() => onSend(text)}>
-                <Text>{'>'}</Text>
-            </TouchableWithoutFeedback>
+            <Pressable style={styles.sendIcon} onPress={() => onSend(text)}>
+                <Icon name="send" size={30} />
+            </Pressable>
         </View>
     );
 };
@@ -41,5 +41,7 @@ const styles = StyleSheet.create({
     input: {
         flex: 1,
     },
-    sendIcon: {},
+    sendIcon: {
+        justifyContent: 'center',
+    },
 });
