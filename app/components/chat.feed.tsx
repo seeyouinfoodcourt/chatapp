@@ -1,12 +1,13 @@
 import { View, Text, VirtualizedList } from 'react-native';
 import React from 'react';
 import { ChatMessage } from './chat.message';
+import { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
 
 type ItemData = {
-    id: number;
+    id: string;
     message: string;
     author: string;
-    timeStamp: string;
+    createdAt: FirebaseFirestoreTypes.Timestamp;
 };
 
 type ChatFeedProps = {
@@ -23,7 +24,7 @@ export const ChatFeed = ({ messages }: ChatFeedProps) => {
                 <ChatMessage
                     message={item.message}
                     author={item.author}
-                    timeStamp={item.timeStamp}
+                    timeStamp={item.createdAt}
                 />
             )}
             keyExtractor={item => item.id.toString()}

@@ -1,10 +1,12 @@
 import { View, Text, StyleSheet, Image } from 'react-native';
 import React from 'react';
+import { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
+import { DateTime } from './date';
 
 type ChatMessageProps = {
     author: string;
     message: string;
-    timeStamp?: string;
+    timeStamp: FirebaseFirestoreTypes.Timestamp;
 };
 
 export const ChatMessage = ({
@@ -18,7 +20,7 @@ export const ChatMessage = ({
             <View style={styles.message}>
                 <Text style={styles.author}>{author}</Text>
                 <Text style={styles.content}>{message}</Text>
-                <Text style={styles.timeStamp}>{timeStamp}</Text>
+                <DateTime timeStamp={timeStamp} style={styles.timeStamp} />
             </View>
         </View>
     );

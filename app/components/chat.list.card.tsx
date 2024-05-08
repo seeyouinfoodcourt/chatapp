@@ -26,7 +26,7 @@ export const ChatListCard = ({ name, onPress }: ChatListCardProps) => {
 
 const styles = StyleSheet.create({
     container: {
-        padding: 16,
+        paddingVertical: 16,
         flexDirection: 'row',
         alignItems: 'center',
         borderBottomWidth: 1,

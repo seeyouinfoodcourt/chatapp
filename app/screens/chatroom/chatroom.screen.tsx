@@ -6,12 +6,13 @@ import { ChatInput } from '../../components/chat.input';
 import data from '../../data/mock.json';
 import { ChatFeed } from '../../components/chat.feed';
 import auth, { firebase } from '@react-native-firebase/auth';
+import { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
 
 type Message = {
     id: string;
     author: string;
     message: string;
-    createdAt?: string;
+    createdAt: FirebaseFirestoreTypes.Timestamp;
 };
 
 type ChatRoomScreenProps = {
@@ -37,7 +38,10 @@ export const ChatRoomScreen = ({ navigation, route }: ChatRoomScreenProps) => {
                 id: doc.id,
                 author: doc.data().author,
                 message: doc.data().message,
+                createdAt: doc.data().createdAt,
             }));
+
+            console.log(messageData);
 
             setMessages(messageData);
         };
@@ -48,11 +52,12 @@ export const ChatRoomScreen = ({ navigation, route }: ChatRoomScreenProps) => {
         console.log(message);
 
         const newMessage = {
-            id: 12,
             message: message,
             author: user?.displayName,
-            timeStamp: '16:32',
+            createdAt: firebase.firestore.Timestamp.now(),
         };
+        const date = new Date(newMessage.createdAt.seconds * 1000);
+        console.log(date);
 
         const docRef = firebase
             .firestore()
