@@ -20,6 +20,7 @@ export const ChatFeed = ({ messages }: ChatFeedProps) => {
     return (
         <VirtualizedList
             initialNumToRender={4}
+            inverted={true}
             renderItem={({ item }) => (
                 <ChatMessage
                     message={item.message}

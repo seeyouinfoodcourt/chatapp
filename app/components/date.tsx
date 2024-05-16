@@ -12,7 +12,8 @@ export const DateTime = ({ timeStamp, style }: DateProps) => {
 
     return (
         <Text style={style}>
-            {date.getHours()}:{date.getMinutes()}
+            {date.toUTCString()}
+            {/* {date.getHours()}:{date.getMinutes()} */}
         </Text>
     );
 };

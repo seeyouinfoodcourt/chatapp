@@ -25,6 +25,7 @@ export const ChatRoomScreen = ({ route }: ChatRoomScreenProps) => {
             .collection('rooms')
             .doc(roomId)
             .collection('messages')
+            .orderBy('createdAt', 'desc')
             .onSnapshot(documentSnapshot => {
                 const newDocs = documentSnapshot.docs.map(doc => ({
                     id: doc.id,

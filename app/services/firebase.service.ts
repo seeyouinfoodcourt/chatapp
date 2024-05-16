@@ -1,6 +1,10 @@
 import firestore from '@react-native-firebase/firestore';
 import { Message } from '../types/app.types';
 
+export const getRooms = () => {
+    return firestore().collection('rooms').get();
+};
+
 /* Get messages from Room ID */
 export const getMessages = async (roomId: string) => {
     const messages = await firestore()

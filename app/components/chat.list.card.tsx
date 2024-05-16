@@ -4,16 +4,22 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 
 type ChatListCardProps = {
     name: string;
+    description: string;
     onPress: () => void;
 };
 
-export const ChatListCard = ({ name, onPress }: ChatListCardProps) => {
+export const ChatListCard = ({
+    name,
+    description,
+    onPress,
+}: ChatListCardProps) => {
     return (
         <TouchableOpacity style={styles.container} onPress={() => onPress()}>
             <View style={styles.image} />
             <View style={styles.textContainer}>
                 <Text style={styles.name}>{name}</Text>
-                <Text style={styles.lastMessage}>This is a placehold</Text>
+                <Text style={styles.description}>{description}</Text>
+                <Text style={styles.lastMessage}>This is a placeholder</Text>
             </View>
             <View style={styles.chevron}>
                 <Icon name="chevron-right" size={40} />
@@ -42,6 +48,10 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         fontSize: 16,
         marginBottom: 2,
+    },
+    description: {
+        fontStyle: 'italic',
+        marginBottom: 4,
     },
     lastMessage: {},
     chevron: {

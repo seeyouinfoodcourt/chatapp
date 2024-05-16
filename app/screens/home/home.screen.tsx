@@ -16,10 +16,12 @@ import { AppStackParamList } from '../../navigators/navigation.types';
 import firestore from '@react-native-firebase/firestore';
 import { ChatListCard } from '../../components/chat.list.card';
 import { sharedStyles } from '../../assets/styles/shared.styles';
+import { getRooms } from '../../services/firebase.service';
 
 type Room = {
     id: string;
     name: string;
+    description: string;
 };
 
 type HomeScreenProps = {
@@ -30,13 +32,14 @@ export const HomeScreen = ({ navigation }: HomeScreenProps) => {
     const [rooms, setRooms] = useState<Room[]>([]);
     const { signOut } = useAuthContext();
 
-    const [refreshing, setRefreshing] = React.useState(false);
+    const [refreshing, setRefreshing] = useState(false);
 
     const fetchRooms = async () => {
-        const rooms = await firestore().collection('rooms').get();
+        const rooms = await getRooms();
         const roomData = rooms.docs.map(doc => ({
             id: doc.id,
             name: doc.data().name,
+            description: doc.data().description,
         }));
         setRefreshing(false);
         setRooms(roomData);
@@ -45,10 +48,6 @@ export const HomeScreen = ({ navigation }: HomeScreenProps) => {
     useEffect(() => {
         fetchRooms();
     }, []);
-
-    // useEffect(() => {
-    //     console.log(rooms);
-    // }, [rooms]);
 
     const createDb = () => {
         const db = firestore();
@@ -83,6 +82,7 @@ export const HomeScreen = ({ navigation }: HomeScreenProps) => {
                 renderItem={({ item }) => (
                     <ChatListCard
                         name={item.name}
+                        description={item.description}
                         onPress={() =>
                             navigation.navigate('Chatroom', {
                                 roomId: item.id,
