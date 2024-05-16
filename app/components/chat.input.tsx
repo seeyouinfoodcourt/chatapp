@@ -1,11 +1,4 @@
-import {
-    View,
-    Text,
-    TextInput,
-    StyleSheet,
-    TouchableWithoutFeedback,
-    Pressable,
-} from 'react-native';
+import { View, TextInput, StyleSheet, Pressable } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
@@ -62,6 +55,10 @@ const styles = StyleSheet.create({
     },
     input: {
         flex: 1,
+        maxHeight: 100,
+        // minHeight: 40,
+        paddingBottom: 0,
+        paddingTop: 6,
     },
     sendIcon: {
         justifyContent: 'center',

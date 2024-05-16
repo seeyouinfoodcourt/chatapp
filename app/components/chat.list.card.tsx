@@ -13,9 +13,7 @@ export const ChatListCard = ({ name, onPress }: ChatListCardProps) => {
             <View style={styles.image} />
             <View style={styles.textContainer}>
                 <Text style={styles.name}>{name}</Text>
-                <Text style={styles.lastMessage}>
-                    This is a placeholder message
-                </Text>
+                <Text style={styles.lastMessage}>This is a placehold</Text>
             </View>
             <View style={styles.chevron}>
                 <Icon name="chevron-right" size={40} />

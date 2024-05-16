@@ -1,79 +1,60 @@
-import { View, StyleSheet, VirtualizedList } from 'react-native';
+import { View, StyleSheet, VirtualizedList, Platform } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { NavigationProp, RouteProp, useRoute } from '@react-navigation/native';
 import { AppStackParamList } from '../../navigators/navigation.types';
 import { ChatInput } from '../../components/chat.input';
-import data from '../../data/mock.json';
 import { ChatFeed } from '../../components/chat.feed';
-import auth, { firebase } from '@react-native-firebase/auth';
-import { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
-
-type Message = {
-    id: string;
-    author: string;
-    message: string;
-    createdAt: FirebaseFirestoreTypes.Timestamp;
-};
+import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
+import { getMessages, sendMessage } from '../../services/firebase.service';
+import { Message } from '../../types/app.types';
 
 type ChatRoomScreenProps = {
     navigation: NavigationProp<AppStackParamList>;
     route: RouteProp<AppStackParamList>;
 };
 
-export const ChatRoomScreen = ({ navigation, route }: ChatRoomScreenProps) => {
-    const { roomId, name } = route.params ?? {};
+export const ChatRoomScreen = ({ route }: ChatRoomScreenProps) => {
+    const { roomId } = route.params ?? {};
     const user = auth().currentUser;
     const [messages, setMessages] = useState<Message[]>([]);
 
+    // Fetch messages with realtime changes
     useEffect(() => {
-        const fetchMessages = async () => {
-            const messages = await firebase
-                .firestore()
-                .collection('rooms')
-                .doc(roomId)
-                .collection('messages')
-                .get();
-
-            const messageData = messages.docs.map(doc => ({
-                id: doc.id,
-                author: doc.data().author,
-                message: doc.data().message,
-                createdAt: doc.data().createdAt,
-            }));
-
-            console.log(messageData);
-
-            setMessages(messageData);
-        };
-        fetchMessages();
-    }, []);
-
-    const sendMessage = (message: string) => {
-        console.log(message);
-
-        const newMessage = {
-            message: message,
-            author: user?.displayName,
-            createdAt: firebase.firestore.Timestamp.now(),
-        };
-        const date = new Date(newMessage.createdAt.seconds * 1000);
-        console.log(date);
-
-        const docRef = firebase
-            .firestore()
+        const subscriber = firestore()
             .collection('rooms')
             .doc(roomId)
             .collection('messages')
-            .add(newMessage)
-            .then(() => console.log('Message added'));
+            .onSnapshot(documentSnapshot => {
+                const newDocs = documentSnapshot.docs.map(doc => ({
+                    id: doc.id,
+                    author: doc.data().author,
+                    message: doc.data().message,
+                    createdAt: doc.data().createdAt,
+                }));
 
-        // setMessages([...messages, newMessage]);
+                console.log('newdocs', newDocs);
+
+                setMessages(newDocs);
+            });
+
+        // Stop listening for updates when no longer required
+        return () => subscriber();
+    }, []);
+
+    const handleSend = (message: string) => {
+        const newMessage = {
+            message: message,
+            author: user?.displayName,
+        };
+
+        sendMessage(roomId, newMessage);
     };
 
     return (
         <View style={styles.container}>
             <View style={styles.footer}>
-                <ChatInput onSend={sendMessage} />
+                <ChatInput onSend={handleSend} />
             </View>
             <View style={styles.chat}>
                 <ChatFeed messages={messages} />
@@ -96,8 +77,5 @@ const styles = StyleSheet.create({
         backgroundColor: 'orange',
         justifyContent: 'center',
         padding: 8,
-        // position: 'absolute',
-        // bottom: 0,
-        // width: '100%',
     },
 });
