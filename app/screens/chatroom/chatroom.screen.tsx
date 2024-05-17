@@ -8,6 +8,7 @@ import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import { getMessages, sendMessage } from '../../services/firebase.service';
 import { Message } from '../../types/app.types';
+import { ChatImagePicker } from '../../components/chat.image.picker';
 
 type ChatRoomScreenProps = {
     navigation: NavigationProp<AppStackParamList>;
@@ -60,6 +61,7 @@ export const ChatRoomScreen = ({ route }: ChatRoomScreenProps) => {
                 <ChatFeed messages={messages} />
             </View>
             <View style={styles.footer}>
+                <ChatImagePicker />
                 <ChatInput onSend={handleSend} />
             </View>
         </KeyboardAvoidingView>
@@ -79,6 +81,7 @@ const styles = StyleSheet.create({
     footer: {
         backgroundColor: 'orange',
         justifyContent: 'center',
+        flexDirection: 'row',
         padding: 8,
     },
 });

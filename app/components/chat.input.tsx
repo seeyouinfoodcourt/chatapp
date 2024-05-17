@@ -52,6 +52,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         borderRadius: 24,
         flexDirection: 'row',
+        flex: 1,
     },
     input: {
         flex: 1,
