@@ -1,4 +1,10 @@
-import { View, StyleSheet, KeyboardAvoidingView, Image } from 'react-native';
+import {
+    View,
+    StyleSheet,
+    KeyboardAvoidingView,
+    Image,
+    TouchableOpacity,
+} from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { NavigationProp, RouteProp } from '@react-navigation/native';
 import { AppStackParamList } from '../../navigators/navigation.types';
@@ -27,6 +33,11 @@ export const ChatRoomScreen = ({ route }: ChatRoomScreenProps) => {
         };
 
         sendMessage(roomId, newMessage);
+        clearImage();
+    };
+
+    const clearImage = () => {
+        setImageUri('');
     };
 
     const handleImagePick = (uri: string) => {
@@ -45,7 +56,11 @@ export const ChatRoomScreen = ({ route }: ChatRoomScreenProps) => {
                 {imageUri ? (
                     <View style={styles.imagePreview}>
                         <Image source={{ uri: imageUri }} style={{ flex: 1 }} />
-                        {/* <Icon name="delete" size={16} style={styles.removeImage} /> */}
+                        <TouchableOpacity
+                            style={styles.removeImage}
+                            onPress={clearImage}>
+                            <Icon name="delete" size={16} />
+                        </TouchableOpacity>
                     </View>
                 ) : null}
 
@@ -80,6 +95,13 @@ const styles = StyleSheet.create({
     },
     removeImage: {
         padding: 4,
+        position: 'absolute',
+        top: -8,
+        right: -8,
+        backgroundColor: '#fff',
+        borderColor: 'orange',
+        borderRadius: 50,
+        borderWidth: 2,
     },
     inputContainer: {
         flexDirection: 'row',

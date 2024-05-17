@@ -39,7 +39,7 @@ export const ChatInput = ({ onSend }: ChatInputProps) => {
                 <Icon
                     name="send"
                     size={30}
-                    color={enableSend ? 'orange' : 'grey'}
+                    color={enableSend ? '#fff' : '#e8c882'}
                 />
             </Pressable>
         </View>
@@ -48,20 +48,23 @@ export const ChatInput = ({ onSend }: ChatInputProps) => {
 
 const styles = StyleSheet.create({
     container: {
-        paddingHorizontal: 16,
-        backgroundColor: '#fff',
-        borderRadius: 24,
+        // paddingHorizontal: 16,
+
         flexDirection: 'row',
         flex: 1,
     },
     input: {
         flex: 1,
         maxHeight: 100,
+        backgroundColor: '#fff',
+        borderRadius: 24,
         // minHeight: 40,
+        paddingHorizontal: 16,
         paddingBottom: 0,
         paddingTop: 6,
     },
     sendIcon: {
         justifyContent: 'center',
+        marginLeft: 8,
     },
 });
