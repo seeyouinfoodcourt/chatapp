@@ -2,16 +2,10 @@ import { View, Text, VirtualizedList, FlatList } from 'react-native';
 import React from 'react';
 import { ChatMessage } from './chat.message';
 import { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
-
-type ItemData = {
-    id: string;
-    message: string;
-    author: string;
-    createdAt: FirebaseFirestoreTypes.Timestamp;
-};
+import { Message } from '../types/app.types';
 
 type ChatFeedProps = {
-    messages: ItemData[];
+    messages: Message[];
 };
 
 export const ChatFeed = ({ messages }: ChatFeedProps) => {
@@ -25,6 +19,7 @@ export const ChatFeed = ({ messages }: ChatFeedProps) => {
             renderItem={({ item }) => (
                 <ChatMessage
                     message={item.message}
+                    imageUri={item.imageUri}
                     author={item.author}
                     timeStamp={item.createdAt}
                 />

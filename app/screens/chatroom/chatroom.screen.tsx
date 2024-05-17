@@ -1,4 +1,4 @@
-import { View, StyleSheet, KeyboardAvoidingView } from 'react-native';
+import { View, StyleSheet, KeyboardAvoidingView, Image } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { NavigationProp, RouteProp } from '@react-navigation/native';
 import { AppStackParamList } from '../../navigators/navigation.types';
@@ -9,6 +9,7 @@ import firestore from '@react-native-firebase/firestore';
 import { getMessages, sendMessage } from '../../services/firebase.service';
 import { Message } from '../../types/app.types';
 import { ChatImagePicker } from '../../components/chat.image.picker';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 type ChatRoomScreenProps = {
     navigation: NavigationProp<AppStackParamList>;
@@ -19,6 +20,7 @@ export const ChatRoomScreen = ({ route }: ChatRoomScreenProps) => {
     const { roomId } = route.params ?? {};
     const user = auth().currentUser;
     const [messages, setMessages] = useState<Message[]>([]);
+    const [imageUri, setImageUri] = useState('');
 
     // Fetch messages with realtime changes
     useEffect(() => {
@@ -32,6 +34,7 @@ export const ChatRoomScreen = ({ route }: ChatRoomScreenProps) => {
                 const newDocs = documentSnapshot.docs.map(doc => ({
                     id: doc.id,
                     author: doc.data().author,
+                    imageUri: doc.data().imageUri,
                     message: doc.data().message,
                     createdAt: doc.data().createdAt,
                 }));
@@ -46,10 +49,15 @@ export const ChatRoomScreen = ({ route }: ChatRoomScreenProps) => {
     const handleSend = (message: string) => {
         const newMessage = {
             message: message,
+            imageUri: imageUri,
             author: user?.displayName,
         };
 
         sendMessage(roomId, newMessage);
+    };
+
+    const handleImagePick = (uri: string) => {
+        setImageUri(uri);
     };
 
     return (
@@ -61,8 +69,17 @@ export const ChatRoomScreen = ({ route }: ChatRoomScreenProps) => {
                 <ChatFeed messages={messages} />
             </View>
             <View style={styles.footer}>
-                <ChatImagePicker />
-                <ChatInput onSend={handleSend} />
+                {imageUri ? (
+                    <View style={styles.imagePreview}>
+                        <Image source={{ uri: imageUri }} style={{ flex: 1 }} />
+                        {/* <Icon name="delete" size={16} style={styles.removeImage} /> */}
+                    </View>
+                ) : null}
+
+                <View style={styles.inputContainer}>
+                    <ChatImagePicker onPick={handleImagePick} />
+                    <ChatInput onSend={handleSend} />
+                </View>
             </View>
         </KeyboardAvoidingView>
     );
@@ -71,7 +88,6 @@ export const ChatRoomScreen = ({ route }: ChatRoomScreenProps) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        // flexDirection: 'column-reverse',
     },
     chat: {
         backgroundColor: 'green',
@@ -81,7 +97,18 @@ const styles = StyleSheet.create({
     footer: {
         backgroundColor: 'orange',
         justifyContent: 'center',
-        flexDirection: 'row',
         padding: 8,
+        gap: 8,
+    },
+    imagePreview: {
+        height: 60,
+        width: 60,
+        backgroundColor: '#fff',
+    },
+    removeImage: {
+        padding: 4,
+    },
+    inputContainer: {
+        flexDirection: 'row',
     },
 });
