@@ -1,19 +1,14 @@
 import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import {
-    ImagePickerResponse,
-    launchImageLibrary,
-} from 'react-native-image-picker';
-import storage from '@react-native-firebase/storage';
-import { utils } from '@react-native-firebase/app';
-import { uploadImage } from '../services/firebase.service';
+import { launchImageLibrary } from 'react-native-image-picker';
 
 type ChatImagePickerProps = {
+    type: 'library' | 'camera';
     onPick: (uri: string) => void;
 };
 
-export const ChatImagePicker = ({ onPick }: ChatImagePickerProps) => {
+export const ChatImagePicker = ({ type, onPick }: ChatImagePickerProps) => {
     const pickImage = async () => {
         try {
             const result = await launchImageLibrary({ mediaType: 'photo' });
@@ -25,7 +20,11 @@ export const ChatImagePicker = ({ onPick }: ChatImagePickerProps) => {
 
     return (
         <TouchableOpacity style={styles.container} onPress={() => pickImage()}>
-            <Icon name="image" size={24} style={styles.icon} />
+            <Icon
+                name={type === 'camera' ? 'photo-camera' : 'image'}
+                size={24}
+                style={styles.icon}
+            />
         </TouchableOpacity>
     );
 };

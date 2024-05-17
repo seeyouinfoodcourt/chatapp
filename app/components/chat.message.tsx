@@ -5,7 +5,7 @@ import { DateTime } from './date';
 
 type ChatMessageProps = {
     author: string;
-    imageUri: string;
+    imageUri?: string;
     message: string;
     timeStamp: FirebaseFirestoreTypes.Timestamp;
 };

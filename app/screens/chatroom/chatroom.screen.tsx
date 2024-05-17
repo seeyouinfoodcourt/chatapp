@@ -5,9 +5,7 @@ import { AppStackParamList } from '../../navigators/navigation.types';
 import { ChatInput } from '../../components/chat.input';
 import { ChatFeed } from '../../components/chat.feed';
 import auth from '@react-native-firebase/auth';
-import firestore from '@react-native-firebase/firestore';
-import { getMessages, sendMessage } from '../../services/firebase.service';
-import { Message } from '../../types/app.types';
+import { sendMessage } from '../../services/firebase.service';
 import { ChatImagePicker } from '../../components/chat.image.picker';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
@@ -19,32 +17,7 @@ type ChatRoomScreenProps = {
 export const ChatRoomScreen = ({ route }: ChatRoomScreenProps) => {
     const { roomId } = route.params ?? {};
     const user = auth().currentUser;
-    const [messages, setMessages] = useState<Message[]>([]);
     const [imageUri, setImageUri] = useState('');
-
-    // Fetch messages with realtime changes
-    useEffect(() => {
-        const subscriber = firestore()
-            .collection('rooms')
-            .doc(roomId)
-            .collection('messages')
-            .limit(5)
-            .orderBy('createdAt', 'desc')
-            .onSnapshot(documentSnapshot => {
-                const newDocs = documentSnapshot.docs.map(doc => ({
-                    id: doc.id,
-                    author: doc.data().author,
-                    imageUri: doc.data().imageUri,
-                    message: doc.data().message,
-                    createdAt: doc.data().createdAt,
-                }));
-
-                setMessages(newDocs);
-            });
-
-        // Stop listening for updates when no longer required
-        return () => subscriber();
-    }, []);
 
     const handleSend = (message: string) => {
         const newMessage = {
@@ -66,7 +39,7 @@ export const ChatRoomScreen = ({ route }: ChatRoomScreenProps) => {
             // behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         >
             <View style={styles.chat}>
-                <ChatFeed messages={messages} />
+                <ChatFeed roomId={roomId} />
             </View>
             <View style={styles.footer}>
                 {imageUri ? (
@@ -77,7 +50,7 @@ export const ChatRoomScreen = ({ route }: ChatRoomScreenProps) => {
                 ) : null}
 
                 <View style={styles.inputContainer}>
-                    <ChatImagePicker onPick={handleImagePick} />
+                    <ChatImagePicker type="library" onPick={handleImagePick} />
                     <ChatInput onSend={handleSend} />
                 </View>
             </View>
