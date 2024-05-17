@@ -1,4 +1,4 @@
-import { View, Text, VirtualizedList } from 'react-native';
+import { View, Text, VirtualizedList, FlatList } from 'react-native';
 import React from 'react';
 import { ChatMessage } from './chat.message';
 import { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
@@ -15,12 +15,13 @@ type ChatFeedProps = {
 };
 
 export const ChatFeed = ({ messages }: ChatFeedProps) => {
-    const getItem = (_data: unknown, index: number): ItemData =>
-        messages[index];
     return (
-        <VirtualizedList
-            initialNumToRender={4}
-            inverted={true}
+        <FlatList
+            data={messages}
+            // onRefresh={() => console.log()}
+            // refreshing
+            initialNumToRender={10}
+            inverted
             renderItem={({ item }) => (
                 <ChatMessage
                     message={item.message}
@@ -28,9 +29,6 @@ export const ChatFeed = ({ messages }: ChatFeedProps) => {
                     timeStamp={item.createdAt}
                 />
             )}
-            keyExtractor={item => item.id.toString()}
-            getItemCount={() => Object.keys(messages).length}
-            getItem={getItem}
         />
     );
 };

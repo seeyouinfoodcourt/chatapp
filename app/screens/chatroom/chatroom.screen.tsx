@@ -1,6 +1,6 @@
-import { View, StyleSheet, VirtualizedList, Platform } from 'react-native';
+import { View, StyleSheet, KeyboardAvoidingView } from 'react-native';
 import React, { useEffect, useState } from 'react';
-import { NavigationProp, RouteProp, useRoute } from '@react-navigation/native';
+import { NavigationProp, RouteProp } from '@react-navigation/native';
 import { AppStackParamList } from '../../navigators/navigation.types';
 import { ChatInput } from '../../components/chat.input';
 import { ChatFeed } from '../../components/chat.feed';
@@ -25,6 +25,7 @@ export const ChatRoomScreen = ({ route }: ChatRoomScreenProps) => {
             .collection('rooms')
             .doc(roomId)
             .collection('messages')
+            .limit(5)
             .orderBy('createdAt', 'desc')
             .onSnapshot(documentSnapshot => {
                 const newDocs = documentSnapshot.docs.map(doc => ({
@@ -33,8 +34,6 @@ export const ChatRoomScreen = ({ route }: ChatRoomScreenProps) => {
                     message: doc.data().message,
                     createdAt: doc.data().createdAt,
                 }));
-
-                console.log('newdocs', newDocs);
 
                 setMessages(newDocs);
             });
@@ -53,21 +52,24 @@ export const ChatRoomScreen = ({ route }: ChatRoomScreenProps) => {
     };
 
     return (
-        <View style={styles.container}>
-            <View style={styles.footer}>
-                <ChatInput onSend={handleSend} />
-            </View>
+        <KeyboardAvoidingView
+            style={styles.container}
+            // behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        >
             <View style={styles.chat}>
                 <ChatFeed messages={messages} />
             </View>
-        </View>
+            <View style={styles.footer}>
+                <ChatInput onSend={handleSend} />
+            </View>
+        </KeyboardAvoidingView>
     );
 };
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        flexDirection: 'column-reverse',
+        // flexDirection: 'column-reverse',
     },
     chat: {
         backgroundColor: 'green',

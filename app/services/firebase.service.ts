@@ -1,8 +1,14 @@
-import firestore from '@react-native-firebase/firestore';
+import firestore, {
+    FirebaseFirestoreTypes,
+} from '@react-native-firebase/firestore';
 import { Message } from '../types/app.types';
 
+/** Get Rooms */
 export const getRooms = () => {
-    return firestore().collection('rooms').get();
+    return firestore()
+        .collection('rooms')
+        .orderBy('latestMessage', 'desc')
+        .get();
 };
 
 /* Get messages from Room ID */
@@ -28,10 +34,26 @@ export const sendMessage = (roomId: string, message: Message) => {
     if (!message.createdAt) {
         message.createdAt = firestore.Timestamp.now();
     }
-    const docRef = firestore()
+    firestore()
         .collection('rooms')
         .doc(roomId)
         .collection('messages')
         .add(message)
-        .then(() => console.log('Message added'));
+        .then(() => {
+            console.log('this');
+            setLatestMessage(roomId, message.createdAt);
+        });
+};
+
+/* Update timestamp for latest message */
+const setLatestMessage = (
+    roomId: string,
+    timestamp: FirebaseFirestoreTypes.Timestamp,
+) => {
+    console.log('roomid', roomId);
+    console.log('timestamp', timestamp);
+    firestore()
+        .collection('rooms')
+        .doc(roomId)
+        .update({ latestMessage: timestamp });
 };
