@@ -65,6 +65,7 @@ export const ChatRoomScreen = ({ route }: ChatRoomScreenProps) => {
                 ) : null}
 
                 <View style={styles.inputContainer}>
+                    <ChatImagePicker type="camera" onPick={handleImagePick} />
                     <ChatImagePicker type="library" onPick={handleImagePick} />
                     <ChatInput onSend={handleSend} />
                 </View>

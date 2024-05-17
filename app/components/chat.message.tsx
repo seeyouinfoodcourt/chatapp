@@ -53,6 +53,7 @@ const styles = StyleSheet.create({
         flex: 1,
         height: 200,
         width: 200,
+        marginVertical: 4,
     },
     message: {
         backgroundColor: '#fff',

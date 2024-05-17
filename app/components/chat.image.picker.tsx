@@ -1,7 +1,7 @@
 import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import { launchImageLibrary } from 'react-native-image-picker';
+import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 
 type ChatImagePickerProps = {
     type: 'library' | 'camera';
@@ -11,7 +11,10 @@ type ChatImagePickerProps = {
 export const ChatImagePicker = ({ type, onPick }: ChatImagePickerProps) => {
     const pickImage = async () => {
         try {
-            const result = await launchImageLibrary({ mediaType: 'photo' });
+            const result =
+                type === 'camera'
+                    ? await launchCamera({ mediaType: 'photo' })
+                    : await launchImageLibrary({ mediaType: 'photo' });
             onPick(result.assets[0].uri);
         } catch (error) {
             console.log(error);
