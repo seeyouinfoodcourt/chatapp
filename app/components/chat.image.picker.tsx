@@ -10,15 +10,22 @@ type ChatImagePickerProps = {
 
 export const ChatImagePicker = ({ type, onPick }: ChatImagePickerProps) => {
     const pickImage = async () => {
-        try {
-            const result =
-                type === 'camera'
-                    ? await launchCamera({ mediaType: 'photo' })
-                    : await launchImageLibrary({ mediaType: 'photo' });
+        const result =
+            type === 'camera'
+                ? await launchCamera({ mediaType: 'photo' })
+                : await launchImageLibrary({ mediaType: 'photo' });
+
+        if (result.assets) {
+            console.log('assets', result);
             onPick(result.assets[0].uri);
-        } catch (error) {
-            console.log(error);
+        } else if (result.didCancel) {
+            console.log('didcancel', result);
+        } else if (result.errorCode) {
+            console.log('errorcode', result);
+        } else if (result.errorMessage) {
+            console.log('errormessage', result);
         }
+        console.log(result);
     };
 
     return (
