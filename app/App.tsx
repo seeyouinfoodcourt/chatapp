@@ -1,10 +1,13 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { AuthProvider } from './contexts/auth.context';
 import { RootNavigator } from './navigators/root.navigator';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { enableScreens } from 'react-native-screens';
 
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import { requestUserPermission } from './services/firebase.service';
+import { Alert } from 'react-native';
+import messaging from '@react-native-firebase/messaging';
 
 GoogleSignin.configure({
     webClientId:
@@ -14,6 +17,19 @@ GoogleSignin.configure({
 enableScreens();
 
 function App(): React.JSX.Element {
+    useEffect(() => {
+        const unsubscribe = messaging().onMessage(async remoteMessage => {
+            Alert.alert(
+                'A new FCM message arrived!',
+                JSON.stringify(remoteMessage),
+            );
+        });
+
+        return unsubscribe;
+    }, []);
+    useEffect(() => {
+        requestUserPermission();
+    }, []);
     return (
         <SafeAreaProvider>
             <AuthProvider>

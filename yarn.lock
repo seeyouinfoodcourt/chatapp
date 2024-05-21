@@ -2330,8 +2330,8 @@ __metadata:
   linkType: hard
 
 "@react-native-firebase/app@npm:^19.2.2":
-  version: 19.2.2
-  resolution: "@react-native-firebase/app@npm:19.2.2"
+  version: 19.3.0
+  resolution: "@react-native-firebase/app@npm:19.3.0"
   dependencies:
     opencollective-postinstall: ^2.0.3
     superstruct: ^0.6.2
@@ -2342,7 +2342,7 @@ __metadata:
   peerDependenciesMeta:
     expo:
       optional: true
-  checksum: 6bab63a70a92f8576a40ea5181ee37c3f07b1b9b3954574a6f1eb6aa9ddd807a5508ac6a775b48da4a04126fd43e228c018b428cf29f3bbc66cb0bc0febcb300
+  checksum: 4fddf8635a8cc64eb5bc8e06af6fc38dcf11779b79b1228a00216643438c094f4bf57baca4697377392a4219d251a7d8b621b7cdfb87f5bffa4254b31eac45ee
   languageName: node
   linkType: hard
 
@@ -2370,25 +2370,25 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@react-native-firebase/messaging@npm:^19.2.2":
+  version: 19.3.0
+  resolution: "@react-native-firebase/messaging@npm:19.3.0"
+  peerDependencies:
+    "@react-native-firebase/app": 19.3.0
+    expo: ">=47.0.0"
+  peerDependenciesMeta:
+    expo:
+      optional: true
+  checksum: 326b80ed16be040802b8fe48f9d9c43801f2cb48e6171fbb9467fb3e81e0b2ed6d7823069c44bcb96c07ba7c5d7440634e274addfd048a9a44cb862ab156b74d
+  languageName: node
+  linkType: hard
+
 "@react-native-firebase/storage@npm:^19.2.2":
   version: 19.2.2
   resolution: "@react-native-firebase/storage@npm:19.2.2"
   peerDependencies:
     "@react-native-firebase/app": 19.2.2
   checksum: 3bfbb6166ca9761226e621f6f665c716b2af973ba1030edee777c49c8963b9689938e179397bc2d0f08c1425ffcd2abcad4b5b9d6e8c86bdb16ef374e100ce26
-  languageName: node
-  linkType: hard
-
-"@react-native-firebase/messaging@npm:^20.0.0":
-  version: 20.0.0
-  resolution: "@react-native-firebase/messaging@npm:20.0.0"
-  peerDependencies:
-    "@react-native-firebase/app": 20.0.0
-    expo: ">=47.0.0"
-  peerDependenciesMeta:
-    expo:
-      optional: true
-  checksum: 0175e08260318942bce0efbc8633478ce565eb23c8625209a4355be9dfcf492bdbb2359988dca7d046ef794708d733410948373dd6c261a803ebfdbc7bfd95c0
   languageName: node
   linkType: hard
 
@@ -3512,7 +3512,7 @@ __metadata:
     "@react-native-firebase/app": ^19.2.2
     "@react-native-firebase/auth": ^19.2.2
     "@react-native-firebase/firestore": ^19.2.2
-    "@react-native-firebase/messaging": ^20.0.0
+    "@react-native-firebase/messaging": ^19.2.2
     "@react-native-firebase/storage": ^19.2.2
     "@react-native-google-signin/google-signin": ^11.0.1
     "@react-native/babel-preset": 0.74.83

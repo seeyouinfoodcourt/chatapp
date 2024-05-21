@@ -16,7 +16,11 @@ import { AppStackParamList } from '../../navigators/navigation.types';
 import firestore from '@react-native-firebase/firestore';
 import { ChatListCard } from '../../components/chat.list.card';
 import { sharedStyles } from '../../assets/styles/shared.styles';
-import { getRooms } from '../../services/firebase.service';
+import {
+    getRooms,
+    getToken,
+    requestUserPermission,
+} from '../../services/firebase.service';
 
 type Room = {
     id: string;
@@ -94,6 +98,7 @@ export const HomeScreen = ({ navigation }: HomeScreenProps) => {
                 keyExtractor={item => item.id}
             />
             <View>
+                <Button title="Sigdfdfdt" onPress={() => getToken()} />
                 <Button title="Sign out" onPress={signOut} />
             </View>
         </SafeAreaView>

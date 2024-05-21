@@ -2,12 +2,32 @@ import firestore, {
     FirebaseFirestoreTypes,
 } from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
+import messaging from '@react-native-firebase/messaging';
 import { Message } from '../types/app.types';
 import { Platform } from 'react-native';
 
+export const requestUserPermission = async () => {
+    const authStatus = await messaging().requestPermission();
+    const enabled =
+        authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+        authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+
+    if (enabled) {
+        console.log('Authorization status:', authStatus);
+    }
+};
+
+export const getToken = async () => {
+    // await messaging().registerDeviceForRemoteMessages();
+    const token = await messaging().getToken();
+    console.log('token', token);
+
+    return token;
+};
+
 /**
  * Get Rooms
- * */
+ */
 export const getRooms = () => {
     return firestore()
         .collection('rooms')
@@ -15,9 +35,9 @@ export const getRooms = () => {
         .get();
 };
 
-/* 
-    Get messages from Room ID 
-*/
+/**
+ * Get messages from Room ID
+ */
 export const getMessages = async (roomId: string) => {
     const messages = await firestore()
         .collection('rooms')
@@ -34,9 +54,9 @@ export const getMessages = async (roomId: string) => {
     return messageData;
 };
 
-/* 
-    Send message to firestore
-*/
+/**
+ * Send message to firestore
+ */
 
 export const sendMessage = async (roomId: string, message: Message) => {
     if (!message.createdAt) {
@@ -63,9 +83,9 @@ export const sendMessage = async (roomId: string, message: Message) => {
         });
 };
 
-/* 
-    Upload image to Firebase storage
-*/
+/**
+ * Upload image to Firebase storage
+ */
 
 export const uploadImage = async (fileName: string, uri: string) => {
     const reference = storage().ref(fileName);
@@ -79,7 +99,9 @@ export const uploadImage = async (fileName: string, uri: string) => {
     return url;
 };
 
-/* Update timestamp for latest message */
+/**
+ * Update timestamp for latest message
+ */
 const setLatestMessage = (
     roomId: string,
     timestamp: FirebaseFirestoreTypes.Timestamp,
