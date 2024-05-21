@@ -8,12 +8,10 @@ import {
 import React, { useEffect, useState } from 'react';
 import { NavigationProp, RouteProp } from '@react-navigation/native';
 import { AppStackParamList } from '../../navigators/navigation.types';
-import { ChatInput } from '../../components/chat.input';
 import { ChatFeed } from '../../components/chat.feed';
-import auth from '@react-native-firebase/auth';
-import { sendMessage } from '../../services/firebase.service';
-import { ChatImagePicker } from '../../components/chat.image.picker';
-import Icon from 'react-native-vector-icons/MaterialIcons';
+
+import { ChatFooter } from '../../components/chat.footer';
+import { Text } from 'react-native';
 
 type ChatRoomScreenProps = {
     navigation: NavigationProp<AppStackParamList>;
@@ -22,27 +20,14 @@ type ChatRoomScreenProps = {
 
 export const ChatRoomScreen = ({ route }: ChatRoomScreenProps) => {
     const { roomId } = route.params ?? {};
-    const user = auth().currentUser;
-    const [imageUri, setImageUri] = useState('');
 
-    const handleSend = (message: string) => {
-        const newMessage = {
-            message: message,
-            imageUri: imageUri,
-            author: user?.displayName,
-        };
-
-        sendMessage(roomId, newMessage);
-        clearImage();
-    };
-
-    const clearImage = () => {
-        setImageUri('');
-    };
-
-    const handleImagePick = (uri: string) => {
-        setImageUri(uri);
-    };
+    if (!roomId) {
+        return (
+            <View>
+                <Text>No room id found</Text>
+            </View>
+        );
+    }
 
     return (
         <KeyboardAvoidingView
@@ -53,22 +38,7 @@ export const ChatRoomScreen = ({ route }: ChatRoomScreenProps) => {
                 <ChatFeed roomId={roomId} />
             </View>
             <View style={styles.footer}>
-                {imageUri ? (
-                    <View style={styles.imagePreview}>
-                        <Image source={{ uri: imageUri }} style={{ flex: 1 }} />
-                        <TouchableOpacity
-                            style={styles.removeImage}
-                            onPress={clearImage}>
-                            <Icon name="delete" size={16} />
-                        </TouchableOpacity>
-                    </View>
-                ) : null}
-
-                <View style={styles.inputContainer}>
-                    <ChatImagePicker type="camera" onPick={handleImagePick} />
-                    <ChatImagePicker type="library" onPick={handleImagePick} />
-                    <ChatInput onSend={handleSend} />
-                </View>
+                <ChatFooter roomId={roomId} />
             </View>
         </KeyboardAvoidingView>
     );

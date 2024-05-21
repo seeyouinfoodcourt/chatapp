@@ -25,7 +25,6 @@ export const ChatImagePicker = ({ type, onPick }: ChatImagePickerProps) => {
         } else if (result.errorMessage) {
             console.log('errormessage', result);
         }
-        console.log(result);
     };
 
     return (

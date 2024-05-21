@@ -3,6 +3,7 @@ import firestore, {
 } from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
 import { Message } from '../types/app.types';
+import { Platform } from 'react-native';
 
 /**
  * Get Rooms
@@ -47,6 +48,10 @@ export const sendMessage = async (roomId: string, message: Message) => {
 
         console.log('message has image', message);
     }
+
+    // Added to help debug
+    message.system = Platform.OS;
+
     firestore()
         .collection('rooms')
         .doc(roomId)
@@ -79,8 +84,6 @@ const setLatestMessage = (
     roomId: string,
     timestamp: FirebaseFirestoreTypes.Timestamp,
 ) => {
-    console.log('roomid', roomId);
-    console.log('timestamp', timestamp);
     firestore()
         .collection('rooms')
         .doc(roomId)
