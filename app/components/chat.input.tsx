@@ -9,23 +9,17 @@ type ChatInputProps = {
 
 export const ChatInput = ({ text, onChangeText }: ChatInputProps) => {
     return (
-        <View style={styles.container}>
-            <TextInput
-                style={styles.input}
-                placeholder="Start typing..."
-                value={text}
-                multiline
-                onChangeText={onChangeText}
-            />
-        </View>
+        <TextInput
+            style={styles.input}
+            placeholder="Start typing..."
+            value={text}
+            multiline
+            onChangeText={onChangeText}
+        />
     );
 };
 
 const styles = StyleSheet.create({
-    container: {
-        flexDirection: 'row',
-        flex: 1,
-    },
     input: {
         flex: 1,
         maxHeight: 100,
