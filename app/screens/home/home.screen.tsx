@@ -6,7 +6,6 @@ import {
     RefreshControl,
     StyleSheet,
 } from 'react-native';
-import auth from '@react-native-firebase/auth';
 import React, { useEffect, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Button } from '../../components/button';
@@ -18,9 +17,11 @@ import { ChatListCard } from '../../components/chat.list.card';
 import { sharedStyles } from '../../assets/styles/shared.styles';
 import {
     getRooms,
-    getToken,
+    getFcmToken,
     requestUserPermission,
+    sendPushMessage,
 } from '../../services/firebase.service';
+import messaging from '@react-native-firebase/messaging';
 
 type Room = {
     id: string;
@@ -98,7 +99,7 @@ export const HomeScreen = ({ navigation }: HomeScreenProps) => {
                 keyExtractor={item => item.id}
             />
             <View>
-                <Button title="Sigdfdfdt" onPress={() => getToken()} />
+                <Button title="Fcm token" onPress={() => getFcmToken()} />
                 <Button title="Sign out" onPress={signOut} />
             </View>
         </SafeAreaView>

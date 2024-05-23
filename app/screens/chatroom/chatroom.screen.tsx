@@ -12,6 +12,7 @@ import { ChatFeed } from '../../components/chat.feed';
 
 import { ChatFooter } from '../../components/chat.footer';
 import { Text } from 'react-native';
+import { subscribeToPushTopic } from '../../services/firebase.service';
 
 type ChatRoomScreenProps = {
     navigation: NavigationProp<AppStackParamList>;
@@ -29,11 +30,13 @@ export const ChatRoomScreen = ({ route }: ChatRoomScreenProps) => {
         );
     }
 
+    useEffect(() => {
+        subscribeToPushTopic(roomId);
+        console.log('useeffect subscribe');
+    }, []);
+
     return (
-        <KeyboardAvoidingView
-            style={styles.container}
-            // behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        >
+        <KeyboardAvoidingView style={styles.container}>
             <View style={styles.chat}>
                 <ChatFeed roomId={roomId} />
             </View>

@@ -5,8 +5,20 @@ import storage from '@react-native-firebase/storage';
 import messaging from '@react-native-firebase/messaging';
 import { Message } from '../types/app.types';
 import { Platform } from 'react-native';
+import { PermissionsAndroid } from 'react-native';
 
+/**
+ * Request user permissions for push messages
+ */
 export const requestUserPermission = async () => {
+    if (Platform.OS === 'android') {
+        // Android permissions
+        PermissionsAndroid.request(
+            PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
+        );
+        return;
+    }
+    // iOS permissions
     const authStatus = await messaging().requestPermission();
     const enabled =
         authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
@@ -17,12 +29,51 @@ export const requestUserPermission = async () => {
     }
 };
 
-export const getToken = async () => {
-    // await messaging().registerDeviceForRemoteMessages();
+/**
+ * Get FCM Registration token
+ */
+
+export const getFcmToken = async () => {
     const token = await messaging().getToken();
-    console.log('token', token);
+    console.log('FCM Registration token', token);
 
     return token;
+};
+
+/**
+ * Subscribe to push notifications for a specific topic
+ * @param topic - The room id is used as topic
+ */
+
+export const subscribeToPushTopic = (topic: string) => {
+    messaging()
+        .subscribeToTopic(topic)
+        .then(res => console.log('Subscribed to topic!', res));
+};
+
+/**
+ * Send push notifications to FCM
+ * @param token - FCM Registration token. Alternatively to send to topics use '/topics/{topic}'
+ * @param auth
+ */
+export const sendPushMessage = async (token: string, auth: string) => {
+    const result = await fetch(
+        'https://fcm.googleapis.com/v1/projects/chat-app-cedaf/messages:send',
+        {
+            method: 'POST',
+            headers: { Authorization: 'Bearer' + auth },
+            body: JSON.stringify({
+                token: token,
+                data: {},
+                notification: {
+                    title: 'TEST FROM SERVICE',
+                    body: 'this push message was sent from the service',
+                },
+            }),
+        },
+    );
+
+    console.log('api', result.status);
 };
 
 /**
@@ -65,8 +116,6 @@ export const sendMessage = async (roomId: string, message: Message) => {
     if (message.imageUri) {
         const imageUrl = await uploadImage('teter.jpg', message.imageUri);
         message.imageUri = imageUrl;
-
-        console.log('message has image', message);
     }
 
     // Added to help debug
@@ -78,7 +127,6 @@ export const sendMessage = async (roomId: string, message: Message) => {
         .collection('messages')
         .add(message)
         .then(() => {
-            console.log('this');
             setLatestMessage(roomId, message.createdAt);
         });
 };
