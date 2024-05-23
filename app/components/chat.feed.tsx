@@ -1,7 +1,6 @@
-import { View, Text, VirtualizedList, FlatList } from 'react-native';
+import { FlatList } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { ChatMessage } from './chat.message';
-import { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
 import { Message } from '../types/app.types';
 import firestore from '@react-native-firebase/firestore';
 

@@ -26,14 +26,18 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     const [userCredentials, setUserCredentials] =
         useState<FirebaseAuthTypes.User | null>(null);
 
-    // Handle user state changes
+    // Update user state when auth state is changed
     const onAuthStateChanged = (user: FirebaseAuthTypes.User | null) => {
+        console.log('on auth state changed', user?.metadata.creationTime);
         setUserCredentials(user);
         if (isLoading) setIsLoading(false);
     };
 
     useEffect(() => {
-        console.log('auth useeffect');
+        console.log('Credentials update: ', userCredentials);
+    }, [userCredentials]);
+
+    useEffect(() => {
         const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
         return subscriber; // unsubscribe on unmount
     }, []);

@@ -2,9 +2,10 @@ import { View, Text, StyleSheet, Image } from 'react-native';
 import React from 'react';
 import { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
 import { DateTime } from './date';
+import { Author } from '../types/app.types';
 
 type ChatMessageProps = {
-    author: string;
+    author: Author;
     imageUri?: string;
     message: string;
     timeStamp: FirebaseFirestoreTypes.Timestamp;
@@ -16,13 +17,15 @@ export const ChatMessage = ({
     message,
     timeStamp,
 }: ChatMessageProps) => {
-    console.log(imageUri);
-
     return (
         <View style={styles.container}>
-            <View style={styles.avatar}></View>
+            {author.avatar ? (
+                <Image style={styles.avatar} source={{ uri: author.avatar }} />
+            ) : (
+                <View style={styles.avatar}></View>
+            )}
             <View style={styles.message}>
-                <Text style={styles.author}>{author}</Text>
+                <Text style={styles.author}>{author.name}</Text>
                 {imageUri ? (
                     <Image
                         style={styles.image}
