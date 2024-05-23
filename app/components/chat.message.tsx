@@ -16,7 +16,6 @@ export const ChatMessage = ({
     message,
     timeStamp,
 }: ChatMessageProps) => {
-    console.log(author, imageUri, message, timeStamp);
     return (
         <View style={styles.container}>
             <View style={styles.avatar}></View>
