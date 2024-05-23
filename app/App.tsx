@@ -17,6 +17,7 @@ GoogleSignin.configure({
 enableScreens();
 
 function App(): React.JSX.Element {
+    // Foreground push messages
     useEffect(() => {
         const unsubscribe = messaging().onMessage(async remoteMessage => {
             Alert.alert(
@@ -27,6 +28,7 @@ function App(): React.JSX.Element {
 
         return unsubscribe;
     }, []);
+    // Request push permission
     useEffect(() => {
         requestUserPermission();
     }, []);
