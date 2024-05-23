@@ -43,6 +43,7 @@ export const sendMessage = async (roomId: string, message: Message) => {
         message.createdAt = firestore.Timestamp.now();
     }
     if (message.imageUri) {
+        // TODO: Get filename for image
         const imageUrl = await uploadImage('teter.jpg', message.imageUri);
         message.imageUri = imageUrl;
 

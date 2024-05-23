@@ -1,24 +1,20 @@
 import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import React from 'react';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import { Room } from '../types/app.types';
 
 type ChatListCardProps = {
-    name: string;
-    description: string;
+    room: Room;
     onPress: () => void;
 };
 
-export const ChatListCard = ({
-    name,
-    description,
-    onPress,
-}: ChatListCardProps) => {
+export const ChatListCard = ({ room, onPress }: ChatListCardProps) => {
     return (
         <TouchableOpacity style={styles.container} onPress={() => onPress()}>
-            <View style={styles.image} />
+            <Image style={styles.image} source={{ uri: room.imageUrl }} />
             <View style={styles.textContainer}>
-                <Text style={styles.name}>{name}</Text>
-                <Text style={styles.description}>{description}</Text>
+                <Text style={styles.name}>{room.name}</Text>
+                <Text style={styles.description}>{room.description}</Text>
                 <Text style={styles.lastMessage}>This is a placeholder</Text>
             </View>
             <View style={styles.chevron}>

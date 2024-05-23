@@ -6,7 +6,6 @@ import {
     RefreshControl,
     StyleSheet,
 } from 'react-native';
-import auth from '@react-native-firebase/auth';
 import React, { useEffect, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Button } from '../../components/button';
@@ -17,12 +16,7 @@ import firestore from '@react-native-firebase/firestore';
 import { ChatListCard } from '../../components/chat.list.card';
 import { sharedStyles } from '../../assets/styles/shared.styles';
 import { getRooms } from '../../services/firebase.service';
-
-type Room = {
-    id: string;
-    name: string;
-    description: string;
-};
+import { Room } from '../../types/app.types';
 
 type HomeScreenProps = {
     navigation: NavigationProp<AppStackParamList>;
@@ -38,6 +32,7 @@ export const HomeScreen = ({ navigation }: HomeScreenProps) => {
         const rooms = await getRooms();
         const roomData = rooms.docs.map(doc => ({
             id: doc.id,
+            imageUrl: doc.data().imageUrl,
             name: doc.data().name,
             description: doc.data().description,
         }));
@@ -81,8 +76,7 @@ export const HomeScreen = ({ navigation }: HomeScreenProps) => {
                 onRefresh={fetchRooms}
                 renderItem={({ item }) => (
                     <ChatListCard
-                        name={item.name}
-                        description={item.description}
+                        room={item}
                         onPress={() =>
                             navigation.navigate('Chatroom', {
                                 roomId: item.id,
