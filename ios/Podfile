@@ -25,6 +25,10 @@ target 'awesomechatapp' do
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
 
+
+  pod 'FBSDKLoginKit'
+    
+
   target 'awesomechatappTests' do
     inherit! :complete
     # Pods for testing

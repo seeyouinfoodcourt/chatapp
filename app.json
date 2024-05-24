@@ -1,4 +1,6 @@
 {
-  "name": "awesomechatapp",
-  "displayName": "awesomechatapp"
+    "name": "awesomechatapp",
+    "displayName": "awesomechatapp",
+    "facebookAppId": "1126998155082136",
+    "facebookClientToken": "ea4c33caa506e090bec7f1c12937b237"
 }

@@ -17,7 +17,6 @@ import { ChatListCard } from '../../components/chat.list.card';
 import { sharedStyles } from '../../assets/styles/shared.styles';
 import { getRooms } from '../../services/firebase.service';
 import { Room } from '../../types/app.types';
-import getAuth from '@react-native-firebase/auth';
 
 type HomeScreenProps = {
     navigation: NavigationProp<AppStackParamList>;
@@ -26,7 +25,6 @@ type HomeScreenProps = {
 export const HomeScreen = ({ navigation }: HomeScreenProps) => {
     const [rooms, setRooms] = useState<Room[]>([]);
     const { signOut } = useAuthContext();
-    const auth = getAuth();
 
     const [refreshing, setRefreshing] = useState(false);
 
