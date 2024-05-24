@@ -17,13 +17,17 @@ export const ChatMessage = ({
     message,
     timeStamp,
 }: ChatMessageProps) => {
+    const avatarPlaceholder = require('../assets/img/avatar-placeholder.jpeg');
     return (
         <View style={styles.container}>
-            {author.avatar ? (
-                <Image style={styles.avatar} source={{ uri: author.avatar }} />
-            ) : (
-                <View style={styles.avatar}></View>
-            )}
+            <Image
+                style={styles.avatar}
+                source={
+                    author.avatar ? { uri: author.avatar } : avatarPlaceholder
+                }
+                onLoad={d => console.log('image loaded', author)}
+                defaultSource={avatarPlaceholder}
+            />
             <View style={styles.message}>
                 <Text style={styles.author}>{author.name}</Text>
                 {imageUri ? (
