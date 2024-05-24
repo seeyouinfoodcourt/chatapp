@@ -1,8 +1,9 @@
-import { FlatList } from 'react-native';
+import { ActivityIndicatorBase, FlatList, Platform } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { ChatMessage } from './chat.message';
 import { Message } from '../types/app.types';
-import firestore from '@react-native-firebase/firestore';
+import { ActivityIndicator } from 'react-native';
+import { getMessages, loadNext } from '../services/firebase.service';
 
 type ChatFeedProps = {
     roomId: string;
@@ -10,38 +11,66 @@ type ChatFeedProps = {
 
 export const ChatFeed = ({ roomId }: ChatFeedProps) => {
     const [messages, setMessages] = useState<Message[]>([]);
+    const [lastMessage, setLastMessage] = useState<Message>();
+    const [refreshing, setRefreshing] = useState(false);
 
-    // Fetch messages with realtime changes
+    const onEndReached = async () => {
+        console.log('end reached. - Last doc', lastMessage?.message);
+
+        if (lastMessage) {
+            setRefreshing(true);
+
+            const result = await loadNext(roomId, lastMessage);
+
+            // console.log('loadmore', result);
+
+            console.log(messages);
+            console.log(result);
+
+            setMessages(prevState => [...prevState, ...result]);
+            setRefreshing(false);
+        }
+    };
+
+    const setInitialMessages = async () => {
+        const initialMessages = await getMessages(roomId);
+        setMessages(initialMessages);
+    };
+
+    // Load initial messages
     useEffect(() => {
-        const subscriber = firestore()
-            .collection('rooms')
-            .doc(roomId)
-            .collection('messages')
-            .limit(5)
-            .orderBy('createdAt', 'desc')
-            .onSnapshot(documentSnapshot => {
-                const newDocs = documentSnapshot.docs.map(doc => ({
-                    id: doc.id,
-                    author: doc.data().author,
-                    imageUri: doc.data().imageUri,
-                    message: doc.data().message,
-                    createdAt: doc.data().createdAt,
-                }));
+        console.log('load initial');
 
-                setMessages(newDocs);
-            });
-
-        // Stop listening for updates when no longer required
-        return () => subscriber();
+        setInitialMessages();
     }, []);
+
+    // Update last message
+    useEffect(() => {
+        console.log('messages updated');
+        const lastMessage = messages[messages.length - 1];
+        setLastMessage(lastMessage);
+    }, [messages]);
+
+    useEffect(() => {
+        console.log('lastMessage', lastMessage?.message);
+    }, [lastMessage]);
 
     return (
         <FlatList
             data={messages}
-            // onRefresh={() => console.log()}
-            // refreshing
+            ListFooterComponent={
+                <ActivityIndicator
+                    animating={refreshing}
+                    style={{ flex: 1, marginVertical: 50 }}
+                    size={'large'}
+                    color={'red'}
+                />
+            }
+            onEndReached={() => onEndReached()}
+            onEndReachedThreshold={0}
             initialNumToRender={10}
             inverted
+            keyExtractor={item => item.id}
             renderItem={({ item }) => (
                 <ChatMessage
                     message={item.message}

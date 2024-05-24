@@ -25,7 +25,6 @@ export const ChatMessage = ({
                 source={
                     author.avatar ? { uri: author.avatar } : avatarPlaceholder
                 }
-                onLoad={d => console.log('image loaded', author)}
                 defaultSource={avatarPlaceholder}
             />
             <View style={styles.message}>

@@ -13,7 +13,7 @@ export type Author = {
 };
 
 export type Message = {
-    id?: string;
+    id: string;
     author: Author;
     imageUri?: string;
     message: string;

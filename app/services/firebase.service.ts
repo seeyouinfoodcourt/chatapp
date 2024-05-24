@@ -19,19 +19,56 @@ export const getRooms = () => {
     Get messages from Room ID 
 */
 export const getMessages = async (roomId: string) => {
-    const messages = await firestore()
+    const result = await firestore()
         .collection('rooms')
         .doc(roomId)
         .collection('messages')
+        .limit(10)
+        .orderBy('createdAt', 'desc')
         .get();
 
-    const messageData: Message[] = messages.docs.map(doc => ({
+    const messages = formatMessages(result);
+    return messages;
+};
+
+export const loadNext = async (roomId: string, lastMessage: Message) => {
+    const lastDoc = await firestore()
+        .collection('rooms')
+        .doc(roomId)
+        .collection('messages')
+        .doc(lastMessage.id)
+        .get();
+
+    const result = await firestore()
+        .collection('rooms')
+        .doc(roomId)
+        .collection('messages')
+        .limit(10)
+        .orderBy('createdAt', 'desc')
+        .startAfter(lastDoc)
+        .get();
+
+    const messages = formatMessages(result);
+
+    console.log('satan', messages);
+
+    return messages;
+};
+
+/**
+ * Format message data
+ */
+
+const formatMessages = (messageData: FirebaseFirestoreTypes.QuerySnapshot) => {
+    const messages: Message[] = messageData.docs.map(doc => ({
         id: doc.id,
         author: doc.data().author,
+        imageUri: doc.data().imageUri,
         message: doc.data().message,
         createdAt: doc.data().createdAt,
     }));
-    return messageData;
+
+    return messages;
 };
 
 /* 
@@ -39,9 +76,11 @@ export const getMessages = async (roomId: string) => {
 */
 
 export const sendMessage = async (roomId: string, message: Message) => {
+    // Add timestamp to message
     if (!message.createdAt) {
         message.createdAt = firestore.Timestamp.now();
     }
+    // Upload image if there is one and change the URI to match CDN
     if (message.imageUri) {
         // TODO: Get filename for image
         const imageUrl = await uploadImage('teter.jpg', message.imageUri);

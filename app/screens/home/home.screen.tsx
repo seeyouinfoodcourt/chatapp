@@ -38,6 +38,7 @@ export const HomeScreen = ({ navigation }: HomeScreenProps) => {
             name: doc.data().name,
             description: doc.data().description,
         }));
+        console.log(roomData);
         setRefreshing(false);
         setRooms(roomData);
     };
