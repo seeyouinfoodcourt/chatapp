@@ -1,4 +1,4 @@
-import { ActivityIndicatorBase, FlatList, Platform } from 'react-native';
+import { ActivityIndicatorBase, Alert, FlatList, Platform } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { ChatMessage } from './chat.message';
 import { Message } from '../types/app.types';
@@ -22,12 +22,13 @@ export const ChatFeed = ({ roomId }: ChatFeedProps) => {
 
             const result = await loadNext(roomId, lastMessage);
 
-            // console.log('loadmore', result);
-
-            console.log(messages);
-            console.log(result);
-
-            setMessages(prevState => [...prevState, ...result]);
+            console.log('loadmore', !!result);
+            if (result.length > 0) {
+                setMessages(prevState => [...prevState, ...result]);
+            } else {
+                // Alert the user when reaching the end of data - it's not pretty i know
+                Alert.alert('No more data');
+            }
             setRefreshing(false);
         }
     };

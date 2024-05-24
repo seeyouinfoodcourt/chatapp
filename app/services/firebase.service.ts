@@ -23,7 +23,7 @@ export const getMessages = async (roomId: string) => {
         .collection('rooms')
         .doc(roomId)
         .collection('messages')
-        .limit(10)
+        .limit(50)
         .orderBy('createdAt', 'desc')
         .get();
 
@@ -43,14 +43,12 @@ export const loadNext = async (roomId: string, lastMessage: Message) => {
         .collection('rooms')
         .doc(roomId)
         .collection('messages')
-        .limit(10)
+        .limit(50)
         .orderBy('createdAt', 'desc')
         .startAfter(lastDoc)
         .get();
 
     const messages = formatMessages(result);
-
-    console.log('satan', messages);
 
     return messages;
 };
