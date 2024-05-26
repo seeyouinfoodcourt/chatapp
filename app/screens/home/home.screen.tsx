@@ -1,23 +1,14 @@
-import {
-    View,
-    Text,
-    FlatList,
-    ScrollView,
-    RefreshControl,
-    StyleSheet,
-} from 'react-native';
+import { View, FlatList, StyleSheet } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Button } from '../../components/button';
 import { useAuthContext } from '../../contexts/auth.context';
 import { NavigationProp } from '@react-navigation/native';
 import { AppStackParamList } from '../../navigators/navigation.types';
-import firestore from '@react-native-firebase/firestore';
 import { ChatListCard } from '../../components/chat.list.card';
 import { sharedStyles } from '../../assets/styles/shared.styles';
 import { getRooms } from '../../services/firebase.service';
 import { Room } from '../../types/app.types';
-import getAuth from '@react-native-firebase/auth';
 
 type HomeScreenProps = {
     navigation: NavigationProp<AppStackParamList>;
@@ -26,8 +17,6 @@ type HomeScreenProps = {
 export const HomeScreen = ({ navigation }: HomeScreenProps) => {
     const [rooms, setRooms] = useState<Room[]>([]);
     const { signOut } = useAuthContext();
-    const auth = getAuth();
-
     const [refreshing, setRefreshing] = useState(false);
 
     const fetchRooms = async () => {
@@ -47,36 +36,13 @@ export const HomeScreen = ({ navigation }: HomeScreenProps) => {
         fetchRooms();
     }, []);
 
-    const createDb = () => {
-        const db = firestore();
-
-        const mainCollectionRef = db.collection('rooms');
-        const mainDocRef = mainCollectionRef.doc('room1'); // Replace 'someDocumentId' with your desired document ID
-
-        // Step 2: Add a subcollection to the document
-        mainDocRef
-            .collection('messages')
-            .add({
-                id: 58745,
-                author: 'Broder Salsa',
-                message: 'Det er fedt',
-                createdAt: '12:45',
-            })
-            .then(docRef => {
-                console.log('Document written with ID: ', docRef.id);
-            })
-            .catch(error => {
-                console.error('Error adding document: ', error);
-            });
-    };
-
     return (
         <SafeAreaView style={sharedStyles.container}>
             <FlatList
-                style={styles.roomList}
                 data={rooms}
                 refreshing={refreshing}
                 onRefresh={fetchRooms}
+                keyExtractor={item => item.id}
                 renderItem={({ item }) => (
                     <ChatListCard
                         room={item}
@@ -88,7 +54,6 @@ export const HomeScreen = ({ navigation }: HomeScreenProps) => {
                         }
                     />
                 )}
-                keyExtractor={item => item.id}
             />
             <View>
                 <Button title="Sign out" onPress={signOut} />
@@ -96,9 +61,3 @@ export const HomeScreen = ({ navigation }: HomeScreenProps) => {
         </SafeAreaView>
     );
 };
-
-const styles = StyleSheet.create({
-    roomList: {
-        // borderWidth: 1,
-    },
-});

@@ -35,13 +35,13 @@ export const ChatFooter = ({ roomId }: ChatFooterProps) => {
         if (!enableSend) {
             return;
         }
-        const newMessage = {
+        const message = {
             message: text,
             imageUri: imageUri,
             author: { name: user?.displayName, avatar: user?.photoURL },
         };
 
-        sendMessage(roomId, newMessage);
+        sendMessage(roomId, message);
         setText('');
         clearImage();
     };

@@ -9,6 +9,7 @@ type DateProps = {
 
 export const DateTime = ({ timeStamp, style }: DateProps) => {
     const date = new Date(timeStamp.seconds * 1000);
+    const now = new Date();
 
     return (
         <Text style={style}>

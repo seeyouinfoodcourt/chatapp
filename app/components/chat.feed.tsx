@@ -1,9 +1,13 @@
-import { ActivityIndicatorBase, Alert, FlatList, Platform } from 'react-native';
+import { Alert, FlatList } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { ChatMessage } from './chat.message';
 import { Message } from '../types/app.types';
 import { ActivityIndicator } from 'react-native';
-import { getMessages, loadNext } from '../services/firebase.service';
+import {
+    formatMessages,
+    getMessages,
+    loadNext,
+} from '../services/firebase.service';
 
 type ChatFeedProps = {
     roomId: string;
@@ -14,15 +18,13 @@ export const ChatFeed = ({ roomId }: ChatFeedProps) => {
     const [lastMessage, setLastMessage] = useState<Message>();
     const [refreshing, setRefreshing] = useState(false);
 
+    // Load new messages on scroll
     const onEndReached = async () => {
-        console.log('end reached. - Last doc', lastMessage?.message);
-
         if (lastMessage) {
             setRefreshing(true);
 
             const result = await loadNext(roomId, lastMessage);
 
-            console.log('loadmore', !!result);
             if (result.length > 0) {
                 setMessages(prevState => [...prevState, ...result]);
             } else {
@@ -33,28 +35,37 @@ export const ChatFeed = ({ roomId }: ChatFeedProps) => {
         }
     };
 
-    const setInitialMessages = async () => {
-        const initialMessages = await getMessages(roomId);
-        setMessages(initialMessages);
+    const getInitialMessages = async () => {
+        const result = await getMessages(roomId).get();
+        const formattedMessages = formatMessages(result);
+        setMessages(formattedMessages);
+        console.log('initial messages', formattedMessages);
     };
 
     // Load initial messages
     useEffect(() => {
-        console.log('load initial');
-
-        setInitialMessages();
+        console.log('hul igennem?');
+        getInitialMessages();
     }, []);
 
-    // Update last message
+    // Listen for new messages
     useEffect(() => {
-        console.log('messages updated');
+        const unsubscribe = getMessages(roomId).onSnapshot(querySnapshot => {
+            console.log('onsnapshot', querySnapshot.docChanges());
+
+            const formattedMessages = formatMessages(querySnapshot);
+            setMessages(formattedMessages);
+        });
+
+        return unsubscribe;
+    }, []);
+
+    // Store last message in state
+    useEffect(() => {
+        console.log('last messages update');
         const lastMessage = messages[messages.length - 1];
         setLastMessage(lastMessage);
     }, [messages]);
-
-    useEffect(() => {
-        console.log('lastMessage', lastMessage?.message);
-    }, [lastMessage]);
 
     return (
         <FlatList
@@ -64,7 +75,7 @@ export const ChatFeed = ({ roomId }: ChatFeedProps) => {
                     animating={refreshing}
                     style={{ flex: 1, marginVertical: 50 }}
                     size={'large'}
-                    color={'red'}
+                    color={'orange'}
                 />
             }
             onEndReached={() => onEndReached()}
@@ -72,14 +83,7 @@ export const ChatFeed = ({ roomId }: ChatFeedProps) => {
             initialNumToRender={10}
             inverted
             keyExtractor={item => item.id}
-            renderItem={({ item }) => (
-                <ChatMessage
-                    message={item.message}
-                    imageUri={item.imageUri}
-                    author={item.author}
-                    timeStamp={item.createdAt}
-                />
-            )}
+            renderItem={({ item }) => <ChatMessage message={item} />}
         />
     );
 };

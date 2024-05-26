@@ -17,5 +17,5 @@ export type Message = {
     author: Author;
     imageUri?: string;
     message: string;
-    createdAt?: FirebaseFirestoreTypes.Timestamp;
+    createdAt: FirebaseFirestoreTypes.Timestamp;
 };

@@ -15,7 +15,6 @@ export const ChatListCard = ({ room, onPress }: ChatListCardProps) => {
             <View style={styles.textContainer}>
                 <Text style={styles.name}>{room.name}</Text>
                 <Text style={styles.description}>{room.description}</Text>
-                <Text style={styles.lastMessage}>This is a placeholder</Text>
             </View>
             <View style={styles.chevron}>
                 <Icon name="chevron-right" size={40} />
@@ -44,11 +43,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
         marginBottom: 2,
     },
-    description: {
-        fontStyle: 'italic',
-        marginBottom: 4,
-    },
-    lastMessage: {},
+    description: {},
     chevron: {
         marginLeft: 'auto',
     },
