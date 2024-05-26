@@ -8,7 +8,6 @@ import {
     getMessages,
     loadNext,
 } from '../services/firebase.service';
-import { Button } from './button';
 
 type ChatFeedProps = {
     roomId: string;
@@ -41,34 +40,29 @@ export const ChatFeed = ({ roomId }: ChatFeedProps) => {
         const result = await getMessages(roomId).get();
         const formattedMessages = formatMessages(result);
         // setMessages(formattedMessages);
-        console.log('initial messages', formattedMessages);
     };
 
     // Load initial messages
     useEffect(() => {
-        console.log('hul igennem?');
-        getInitialMessages();
+        // getInitialMessages();
     }, []);
 
-    // Listen for new messages
+    // Get initial messages and listen for new messages
     useEffect(() => {
         const unsubscribe = getMessages(roomId).onSnapshot(querySnapshot => {
-            console.log('onsnapshot', querySnapshot.docChanges());
+            const filteredChanges = querySnapshot
+                .docChanges()
+                .filter(change => change.type === 'added');
 
-            // const formattedMessages = querySnapshot
-            //     .docChanges()
-            //     .map(change => ({
-            //         id: change.doc.id,
-            //         author: change.doc.data().author,
-            //         message: change.doc.data().message,
-            //         imageUri: change.doc.data().imageUri,
-            //         createdAt: change.doc.data().createdAt,
-            //     }));
+            const formattedMessages = filteredChanges.map(change => ({
+                id: change.doc.id,
+                author: change.doc.data().author,
+                message: change.doc.data().message,
+                imageUri: change.doc.data().imageUri,
+                createdAt: change.doc.data().createdAt,
+            }));
 
-            const formattedMessages = formatMessages(querySnapshot);
-            setMessages(formattedMessages);
-            if (listRef.current)
-                listRef.current.scrollToIndex({ animated: false, index: 0 });
+            setMessages(prevState => [...prevState, ...formattedMessages]);
         });
 
         return unsubscribe;
@@ -76,7 +70,6 @@ export const ChatFeed = ({ roomId }: ChatFeedProps) => {
 
     // Store last message in state
     useEffect(() => {
-        console.log('last messages update');
         const lastMessage = messages[messages.length - 1];
         setLastMessage(lastMessage);
     }, [messages]);
