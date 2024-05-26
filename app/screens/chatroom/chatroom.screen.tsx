@@ -5,7 +5,7 @@ import {
     Image,
     TouchableOpacity,
 } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { NavigationProp, RouteProp } from '@react-navigation/native';
 import { AppStackParamList } from '../../navigators/navigation.types';
 import { ChatFeed } from '../../components/chat.feed';

@@ -1,5 +1,5 @@
 import { Alert, FlatList } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import React, { MutableRefObject, useEffect, useRef, useState } from 'react';
 import { ChatMessage } from './chat.message';
 import { Message } from '../types/app.types';
 import { ActivityIndicator } from 'react-native';
@@ -8,6 +8,7 @@ import {
     getMessages,
     loadNext,
 } from '../services/firebase.service';
+import { Button } from './button';
 
 type ChatFeedProps = {
     roomId: string;
@@ -17,6 +18,7 @@ export const ChatFeed = ({ roomId }: ChatFeedProps) => {
     const [messages, setMessages] = useState<Message[]>([]);
     const [lastMessage, setLastMessage] = useState<Message>();
     const [refreshing, setRefreshing] = useState(false);
+    const listRef = useRef<FlatList>(null);
 
     // Load new messages on scroll
     const onEndReached = async () => {
@@ -38,7 +40,7 @@ export const ChatFeed = ({ roomId }: ChatFeedProps) => {
     const getInitialMessages = async () => {
         const result = await getMessages(roomId).get();
         const formattedMessages = formatMessages(result);
-        setMessages(formattedMessages);
+        // setMessages(formattedMessages);
         console.log('initial messages', formattedMessages);
     };
 
@@ -53,8 +55,20 @@ export const ChatFeed = ({ roomId }: ChatFeedProps) => {
         const unsubscribe = getMessages(roomId).onSnapshot(querySnapshot => {
             console.log('onsnapshot', querySnapshot.docChanges());
 
+            // const formattedMessages = querySnapshot
+            //     .docChanges()
+            //     .map(change => ({
+            //         id: change.doc.id,
+            //         author: change.doc.data().author,
+            //         message: change.doc.data().message,
+            //         imageUri: change.doc.data().imageUri,
+            //         createdAt: change.doc.data().createdAt,
+            //     }));
+
             const formattedMessages = formatMessages(querySnapshot);
             setMessages(formattedMessages);
+            if (listRef.current)
+                listRef.current.scrollToIndex({ animated: false, index: 0 });
         });
 
         return unsubscribe;
@@ -68,22 +82,25 @@ export const ChatFeed = ({ roomId }: ChatFeedProps) => {
     }, [messages]);
 
     return (
-        <FlatList
-            data={messages}
-            ListFooterComponent={
-                <ActivityIndicator
-                    animating={refreshing}
-                    style={{ flex: 1, marginVertical: 50 }}
-                    size={'large'}
-                    color={'orange'}
-                />
-            }
-            onEndReached={() => onEndReached()}
-            onEndReachedThreshold={0}
-            initialNumToRender={10}
-            inverted
-            keyExtractor={item => item.id}
-            renderItem={({ item }) => <ChatMessage message={item} />}
-        />
+        <>
+            <FlatList
+                ref={listRef}
+                data={messages}
+                ListFooterComponent={
+                    <ActivityIndicator
+                        animating={refreshing}
+                        style={{ flex: 1, marginVertical: 50 }}
+                        size={'large'}
+                        color={'orange'}
+                    />
+                }
+                onEndReached={() => onEndReached()}
+                onEndReachedThreshold={0}
+                initialNumToRender={10}
+                inverted
+                keyExtractor={item => item.id}
+                renderItem={({ item }) => <ChatMessage message={item} />}
+            />
+        </>
     );
 };

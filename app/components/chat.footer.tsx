@@ -5,7 +5,7 @@ import {
     StyleSheet,
     Pressable,
 } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import React, { MutableRefObject, useEffect, useState } from 'react';
 import { ChatImagePicker } from './chat.image.picker';
 import { ChatInput } from './chat.input';
 import Icon from 'react-native-vector-icons/MaterialIcons';
