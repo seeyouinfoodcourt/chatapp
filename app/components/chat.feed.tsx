@@ -50,19 +50,24 @@ export const ChatFeed = ({ roomId }: ChatFeedProps) => {
     // Get initial messages and listen for new messages
     useEffect(() => {
         const unsubscribe = getMessages(roomId).onSnapshot(querySnapshot => {
-            const filteredChanges = querySnapshot
+            console.log(
+                querySnapshot.docChanges().map(change => ({
+                    type: change.type,
+                    message: change.doc.data().message,
+                })),
+            );
+            const newMessages = querySnapshot
                 .docChanges()
-                .filter(change => change.type === 'added');
+                .filter(change => change.type === 'added')
+                .map(change => ({
+                    id: change.doc.id,
+                    author: change.doc.data().author,
+                    message: change.doc.data().message,
+                    imageUri: change.doc.data().imageUri,
+                    createdAt: change.doc.data().createdAt,
+                }));
 
-            const formattedMessages = filteredChanges.map(change => ({
-                id: change.doc.id,
-                author: change.doc.data().author,
-                message: change.doc.data().message,
-                imageUri: change.doc.data().imageUri,
-                createdAt: change.doc.data().createdAt,
-            }));
-
-            setMessages(prevState => [...prevState, ...formattedMessages]);
+            setMessages(prevState => [...newMessages, ...prevState]);
         });
 
         return unsubscribe;
@@ -70,9 +75,14 @@ export const ChatFeed = ({ roomId }: ChatFeedProps) => {
 
     // Store last message in state
     useEffect(() => {
+        console.log('Messages updated', messages.length);
         const lastMessage = messages[messages.length - 1];
         setLastMessage(lastMessage);
     }, [messages]);
+
+    useEffect(() => {
+        console.log('Last message updated', lastMessage);
+    }, [lastMessage]);
 
     return (
         <>
