@@ -3,6 +3,7 @@ import firestore, {
 } from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
 import { Message } from '../types/app.types';
+import uuid from 'react-native-uuid';
 
 const queryLimit = 10;
 const roomsRef = firestore().collection('rooms');
@@ -74,10 +75,11 @@ export const sendMessage = async (roomId: string, message: Message) => {
     if (!message.createdAt) {
         message.createdAt = firestore.Timestamp.now();
     }
+
     // Upload image if there is one and change the URI to match CDN
     if (message.imageUri) {
         // TODO: Get filename for image
-        const imageUrl = await uploadImage('teter.jpg', message.imageUri);
+        const imageUrl = await uploadImage(message.imageUri);
         message.imageUri = imageUrl;
     }
 
@@ -90,9 +92,13 @@ export const sendMessage = async (roomId: string, message: Message) => {
     Upload image to Firebase storage and get the URL
 */
 
-export const uploadImage = async (fileName: string, uri: string) => {
+export const uploadImage = async (uri: string) => {
+    // Upload image to unique folder to preserve filenames without overwriting
+    const uniqueFolder = uuid.v4();
+    const fileName = uri.split('/').pop();
+
     // Create a reference to the image location
-    const reference = storage().ref(fileName);
+    const reference = storage().ref('/images/' + uniqueFolder + '/' + fileName);
 
     // Upload the image to Firebase Storage
     await reference.putFile(uri);
