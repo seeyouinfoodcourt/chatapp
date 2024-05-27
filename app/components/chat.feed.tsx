@@ -3,11 +3,7 @@ import React, { MutableRefObject, useEffect, useRef, useState } from 'react';
 import { ChatMessage } from './chat.message';
 import { Message } from '../types/app.types';
 import { ActivityIndicator } from 'react-native';
-import {
-    formatMessages,
-    getMessages,
-    loadNext,
-} from '../services/firebase.service';
+import { getMessages, loadNext } from '../services/firebase.service';
 
 type ChatFeedProps = {
     roomId: string;
@@ -36,26 +32,12 @@ export const ChatFeed = ({ roomId }: ChatFeedProps) => {
         }
     };
 
-    const getInitialMessages = async () => {
-        const result = await getMessages(roomId).get();
-        const formattedMessages = formatMessages(result);
-        // setMessages(formattedMessages);
-    };
-
-    // Load initial messages
-    useEffect(() => {
-        // getInitialMessages();
-    }, []);
-
     // Get initial messages and listen for new messages
     useEffect(() => {
+        // Remove messages before feed re-render to make sure the initial messages are not set twice
+        // TODO: remove messages from previous state if the same ID exists in the newMessages array
+        setMessages([]);
         const unsubscribe = getMessages(roomId).onSnapshot(querySnapshot => {
-            console.log(
-                querySnapshot.docChanges().map(change => ({
-                    type: change.type,
-                    message: change.doc.data().message,
-                })),
-            );
             const newMessages = querySnapshot
                 .docChanges()
                 .filter(change => change.type === 'added')
