@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">awesomechatapp</string>
+    <string name="facebook_app_id">1126998155082136</string>
+    <string name="facebook_client_token">ea4c33caa506e090bec7f1c12937b237</string>
 </resources>
