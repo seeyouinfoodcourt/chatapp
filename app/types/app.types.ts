@@ -9,7 +9,7 @@ export type Room = {
 
 export type Author = {
     name: string;
-    avatar: string;
+    avatar?: string;
 };
 
 export type Message = {
@@ -18,4 +18,10 @@ export type Message = {
     imageUri?: string;
     message: string;
     createdAt: FirebaseFirestoreTypes.Timestamp;
+};
+
+export type MessageData = {
+    author: Author;
+    message: string;
+    imageUri: string;
 };

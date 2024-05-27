@@ -35,10 +35,15 @@ export const ChatFooter = ({ roomId }: ChatFooterProps) => {
         if (!enableSend) {
             return;
         }
+
+        const author = {
+            name: user?.displayName || 'Anonymous User',
+            avatar: user?.photoURL || undefined,
+        };
         const message = {
             message: text,
             imageUri: imageUri,
-            author: { name: user?.displayName, avatar: user?.photoURL },
+            author: author,
         };
 
         sendMessage(roomId, message);

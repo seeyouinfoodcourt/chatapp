@@ -2,7 +2,7 @@ import firestore, {
     FirebaseFirestoreTypes,
 } from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
-import { Message } from '../types/app.types';
+import { Message, MessageData } from '../types/app.types';
 import uuid from 'react-native-uuid';
 
 const queryLimit = 10;
@@ -70,15 +70,15 @@ export const formatMessages = (
     Send message to firestore
 */
 
-export const sendMessage = async (roomId: string, message: Message) => {
-    // Add timestamp to message
-    if (!message.createdAt) {
-        message.createdAt = firestore.Timestamp.now();
-    }
+export const sendMessage = async (roomId: string, messageData: MessageData) => {
+    const message = {
+        ...messageData,
+        createdAt: firestore.Timestamp.now(),
+    };
 
     // Upload image if there is one and change the URI to match CDN
     if (message.imageUri) {
-        // TODO: Get filename for image
+        console.log('message has image');
         const imageUrl = await uploadImage(message.imageUri);
         message.imageUri = imageUrl;
     }
