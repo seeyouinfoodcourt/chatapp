@@ -4,7 +4,7 @@ import { sharedStyles } from '../../assets/styles/shared.styles';
 import { Title } from '../../components/title';
 import { Button } from '../../components/button';
 import { GoogleSignInButton } from '../../components/google.signin';
-import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Alert, StyleSheet, Text, View } from 'react-native';
 import { useAuthContext } from '../../contexts/auth.context';
 import { Provider } from '../../types/app.types';
 
@@ -13,9 +13,14 @@ export const SigninScreen = () => {
     const [isLoading, setIsLoading] = useState(false);
 
     const handleSignIn = async (provider: Provider) => {
-        setIsLoading(true);
-        await signInWithProvider(provider);
-        setIsLoading(false);
+        try {
+            setIsLoading(true);
+            await signInWithProvider(provider);
+        } catch (error) {
+            Alert.alert('Sign in failed', JSON.stringify(error));
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     return (

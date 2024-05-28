@@ -115,38 +115,46 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
      * Sign in with Google
      */
     const signInWithGoogle = async () => {
-        try {
-            // Check if your device supports Google Play
-            await GoogleSignin.hasPlayServices({
-                showPlayServicesUpdateDialog: true,
-            });
-            // Get the users ID token
-            const { idToken } = await GoogleSignin.signIn();
+        // Check if your device supports Google Play
+        await GoogleSignin.hasPlayServices({
+            showPlayServicesUpdateDialog: true,
+        });
+        // Get the users ID token
+        const { idToken } = await GoogleSignin.signIn();
 
-            // Create a Google credential with the token
-            const googleCredential =
-                auth.GoogleAuthProvider.credential(idToken);
+        // Create a Google credential with the token
+        const googleCredential = auth.GoogleAuthProvider.credential(idToken);
 
-            // Sign-in the user with the credential
-            return auth().signInWithCredential(googleCredential);
-        } catch (error) {
-            Alert.alert('Error signing in with Google', JSON.stringify(error));
-        }
+        // Sign-in the user with the credential
+        return auth().signInWithCredential(googleCredential);
     };
 
     /**
      * Handles provider signin
      * @param provider 'facebook' or 'google'
      */
-    const signInWithProvider = (provider: 'facebook' | 'google') => {
-        if (provider === 'facebook') {
-            return Platform.OS === 'ios'
-                ? signInWithFacebookLimited()
-                : signInWithFacebook();
+    const signInWithProvider = async (provider: 'facebook' | 'google') => {
+        let signInMethod = undefined;
+        switch (provider) {
+            case 'facebook':
+                signInMethod =
+                    Platform.OS === 'ios'
+                        ? signInWithFacebookLimited
+                        : signInWithFacebook;
+                break;
+            case 'google':
+                signInMethod = signInWithGoogle;
+                break;
+        }
+        if (signInMethod === undefined) {
+            throw new Error('Provider not supported');
         }
 
-        if (provider === 'google') {
-            return signInWithGoogle();
+        try {
+            return await signInMethod();
+        } catch (error) {
+            console.error(provider, 'Sign in failed - ', error);
+            throw error;
         }
     };
 
