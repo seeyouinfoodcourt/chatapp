@@ -5,7 +5,7 @@ import {
     StyleSheet,
     Pressable,
 } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import React, { MutableRefObject, useEffect, useState } from 'react';
 import { ChatImagePicker } from './chat.image.picker';
 import { ChatInput } from './chat.input';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -35,13 +35,18 @@ export const ChatFooter = ({ roomId }: ChatFooterProps) => {
         if (!enableSend) {
             return;
         }
-        const newMessage = {
+
+        const author = {
+            name: user?.displayName || 'Anonymous User',
+            avatar: user?.photoURL || undefined,
+        };
+        const message = {
             message: text,
             imageUri: imageUri,
-            author: { name: user?.displayName, avatar: user?.photoURL },
+            author: author,
         };
 
-        sendMessage(roomId, newMessage);
+        sendMessage(roomId, message);
         setText('');
         clearImage();
     };

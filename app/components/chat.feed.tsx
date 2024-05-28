@@ -1,8 +1,9 @@
-import { FlatList } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import { Alert, FlatList } from 'react-native';
+import React, { MutableRefObject, useEffect, useRef, useState } from 'react';
 import { ChatMessage } from './chat.message';
 import { Message } from '../types/app.types';
-import firestore from '@react-native-firebase/firestore';
+import { ActivityIndicator } from 'react-native';
+import { getMessages, loadNext } from '../services/firebase.service';
 
 type ChatFeedProps = {
     roomId: string;
@@ -10,46 +11,81 @@ type ChatFeedProps = {
 
 export const ChatFeed = ({ roomId }: ChatFeedProps) => {
     const [messages, setMessages] = useState<Message[]>([]);
+    const [lastMessage, setLastMessage] = useState<Message>();
+    const [refreshing, setRefreshing] = useState(false);
+    const listRef = useRef<FlatList>(null);
 
-    // Fetch messages with realtime changes
+    // Load new messages on scroll
+    const onEndReached = async () => {
+        if (lastMessage) {
+            setRefreshing(true);
+
+            const result = await loadNext(roomId, lastMessage);
+
+            if (result.length > 0) {
+                setMessages(prevState => [...prevState, ...result]);
+            } else {
+                // Alert the user when reaching the end of data - it's not pretty i know
+                Alert.alert('No more data');
+            }
+            setRefreshing(false);
+        }
+    };
+
+    // Get initial messages and listen for new messages
     useEffect(() => {
-        const subscriber = firestore()
-            .collection('rooms')
-            .doc(roomId)
-            .collection('messages')
-            .limit(5)
-            .orderBy('createdAt', 'desc')
-            .onSnapshot(documentSnapshot => {
-                const newDocs = documentSnapshot.docs.map(doc => ({
-                    id: doc.id,
-                    author: doc.data().author,
-                    imageUri: doc.data().imageUri,
-                    message: doc.data().message,
-                    createdAt: doc.data().createdAt,
+        // Remove messages before feed re-render to make sure the initial messages are not set twice
+        // TODO: remove messages from previous state if the same ID exists in the newMessages array
+        setMessages([]);
+        const unsubscribe = getMessages(roomId).onSnapshot(querySnapshot => {
+            const newMessages = querySnapshot
+                .docChanges()
+                .filter(change => change.type === 'added')
+                .map(change => ({
+                    id: change.doc.id,
+                    author: change.doc.data().author,
+                    message: change.doc.data().message,
+                    imageUri: change.doc.data().imageUri,
+                    createdAt: change.doc.data().createdAt,
                 }));
 
-                setMessages(newDocs);
-            });
+            setMessages(prevState => [...newMessages, ...prevState]);
+        });
 
-        // Stop listening for updates when no longer required
-        return () => subscriber();
+        return unsubscribe;
     }, []);
 
+    // Store last message in state
+    useEffect(() => {
+        console.log('Messages updated', messages.length);
+        const lastMessage = messages[messages.length - 1];
+        setLastMessage(lastMessage);
+    }, [messages]);
+
+    useEffect(() => {
+        console.log('Last message updated', lastMessage);
+    }, [lastMessage]);
+
     return (
-        <FlatList
-            data={messages}
-            // onRefresh={() => console.log()}
-            // refreshing
-            initialNumToRender={10}
-            inverted
-            renderItem={({ item }) => (
-                <ChatMessage
-                    message={item.message}
-                    imageUri={item.imageUri}
-                    author={item.author}
-                    timeStamp={item.createdAt}
-                />
-            )}
-        />
+        <>
+            <FlatList
+                ref={listRef}
+                data={messages}
+                ListFooterComponent={
+                    <ActivityIndicator
+                        animating={refreshing}
+                        style={{ flex: 1, marginVertical: 50 }}
+                        size={'large'}
+                        color={'orange'}
+                    />
+                }
+                onEndReached={() => onEndReached()}
+                onEndReachedThreshold={0}
+                initialNumToRender={10}
+                inverted
+                keyExtractor={item => item.id}
+                renderItem={({ item }) => <ChatMessage message={item} />}
+            />
+        </>
     );
 };

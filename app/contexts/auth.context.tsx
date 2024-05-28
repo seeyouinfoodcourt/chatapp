@@ -7,11 +7,19 @@ import {
     useEffect,
     useState,
 } from 'react';
-import { Alert } from 'react-native';
+import { Alert, Platform } from 'react-native';
+import {
+    LoginManager,
+    AccessToken,
+    AuthenticationToken,
+} from 'react-native-fbsdk-next';
+import { sha256 } from 'react-native-sha256';
+import uuid from 'react-native-uuid';
 
 type AuthContext = {
     isLoading: boolean;
     userCredentials: FirebaseAuthTypes.User | null;
+    signInWithProvider: (provider: 'facebook' | 'google') => void;
     signOut: () => void;
 };
 
@@ -33,14 +41,114 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         if (isLoading) setIsLoading(false);
     };
 
-    useEffect(() => {
-        console.log('Credentials update: ', userCredentials);
-    }, [userCredentials]);
+    /**
+     * Sign in with Facebook credentials
+     * Doesn't work on ios - Use signInWithFacebookLimited
+     */
+    const signInWithFacebook = async () => {
+        // Attempt login with permissions
+        const result = await LoginManager.logInWithPermissions([
+            'public_profile',
+            'email',
+        ]);
 
-    useEffect(() => {
-        const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
-        return subscriber; // unsubscribe on unmount
-    }, []);
+        if (result.isCancelled) {
+            throw 'User cancelled the login process';
+        }
+
+        // Once signed in, get the users AccessToken
+        const data = await AccessToken.getCurrentAccessToken();
+
+        if (!data) {
+            throw 'Something went wrong obtaining access token';
+        }
+
+        // Create a Firebase credential with the AccessToken
+        const facebookCredential = auth.FacebookAuthProvider.credential(
+            data.accessToken,
+        );
+
+        // Sign-in the user with the credential
+        return auth().signInWithCredential(facebookCredential);
+    };
+
+    /**
+     * Sign in with Facebook credentials on ios
+     */
+    const signInWithFacebookLimited = async () => {
+        // Create a nonce and the corresponding
+        // sha256 hash of the nonce
+        const nonce = uuid.v4();
+        const nonceString =
+            typeof nonce === 'string' ? nonce : JSON.stringify(nonce);
+        const nonceSha256 = await sha256(nonceString);
+        // Attempt login with permissions and limited login
+        const result = await LoginManager.logInWithPermissions(
+            ['public_profile', 'email'],
+            'limited',
+            nonceSha256,
+        );
+
+        if (result.isCancelled) {
+            throw 'User cancelled the login process';
+        }
+
+        // Once signed in, get the users AuthenticationToken
+        const data = await AuthenticationToken.getAuthenticationTokenIOS();
+
+        if (!data) {
+            throw 'Something went wrong obtaining authentication token';
+        }
+
+        // Create a Firebase credential with the AuthenticationToken
+        // and the nonce (Firebase will validates the hash against the nonce)
+        const facebookCredential = auth.FacebookAuthProvider.credential(
+            data.authenticationToken,
+            nonceString,
+        );
+
+        // Sign-in the user with the credential
+        return auth().signInWithCredential(facebookCredential);
+    };
+
+    /**
+     * Sign in with Google
+     */
+    const signInWithGoogle = async () => {
+        try {
+            // Check if your device supports Google Play
+            await GoogleSignin.hasPlayServices({
+                showPlayServicesUpdateDialog: true,
+            });
+            // Get the users ID token
+            const { idToken } = await GoogleSignin.signIn();
+
+            // Create a Google credential with the token
+            const googleCredential =
+                auth.GoogleAuthProvider.credential(idToken);
+
+            // Sign-in the user with the credential
+            return auth().signInWithCredential(googleCredential);
+        } catch (error) {
+            Alert.alert('Error signing in with Google', JSON.stringify(error));
+        }
+    };
+
+    /**
+     * Handles provider signin
+     * @param provider 'facebook' or 'google'
+     */
+    const signInWithProvider = (provider: 'facebook' | 'google') => {
+        if (provider === 'facebook') {
+            return Platform.OS === 'ios'
+                ? signInWithFacebookLimited()
+                : signInWithFacebook();
+        }
+
+        if (provider === 'google') {
+            return signInWithGoogle();
+        }
+    };
 
     const signOut = () => {
         const handleSignOut = () => {
@@ -66,11 +174,23 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
             },
         ]);
     };
+
+    useEffect(() => {
+        console.log('Credentials update: ', userCredentials);
+    }, [userCredentials]);
+
+    // Listen for changes in the auth state
+    useEffect(() => {
+        const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
+        return subscriber; // unsubscribe on unmount
+    }, []);
+
     return (
         <AuthContext.Provider
             value={{
                 isLoading,
                 userCredentials,
+                signInWithProvider,
                 signOut,
             }}>
             {children}

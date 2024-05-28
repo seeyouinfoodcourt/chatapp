@@ -2,91 +2,117 @@ import firestore, {
     FirebaseFirestoreTypes,
 } from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
-import { Message } from '../types/app.types';
-import { Platform } from 'react-native';
+import { Message, MessageData } from '../types/app.types';
+import uuid from 'react-native-uuid';
+
+const queryLimit = 10;
+const roomsRef = firestore().collection('rooms');
 
 /**
  * Get Rooms
  * */
 export const getRooms = () => {
-    return firestore()
-        .collection('rooms')
-        .orderBy('latestMessage', 'desc')
-        .get();
+    return roomsRef.orderBy('latestMessage', 'desc').get();
 };
 
 /* 
-    Get messages from Room ID 
+    Get messages from Room ID with realtime updates 
 */
-export const getMessages = async (roomId: string) => {
-    const messages = await firestore()
-        .collection('rooms')
+export const getMessages = (roomId: string) => {
+    return roomsRef
         .doc(roomId)
         .collection('messages')
+        .limit(queryLimit)
+        .orderBy('createdAt', 'desc');
+};
+
+export const loadNext = async (roomId: string, lastMessage: Message) => {
+    // Get the last document based on the last message ID
+    const lastDoc = await roomsRef
+        .doc(roomId)
+        .collection('messages')
+        .doc(lastMessage.id)
         .get();
 
-    const messageData: Message[] = messages.docs.map(doc => ({
+    // Get the next amount of messages after last document
+    const result = await roomsRef
+        .doc(roomId)
+        .collection('messages')
+        .limit(queryLimit)
+        .orderBy('createdAt', 'desc')
+        .startAfter(lastDoc)
+        .get();
+
+    const messages = formatMessages(result);
+
+    return messages;
+};
+
+/**
+ * Format message data
+ */
+
+export const formatMessages = (
+    messageData: FirebaseFirestoreTypes.QuerySnapshot,
+) => {
+    const messages: Message[] = messageData.docs.map(doc => ({
         id: doc.id,
         author: doc.data().author,
+        imageUri: doc.data().imageUri,
         message: doc.data().message,
         createdAt: doc.data().createdAt,
     }));
-    return messageData;
+
+    return messages;
 };
 
 /* 
     Send message to firestore
 */
 
-export const sendMessage = async (roomId: string, message: Message) => {
-    if (!message.createdAt) {
-        message.createdAt = firestore.Timestamp.now();
-    }
+export const sendMessage = async (roomId: string, messageData: MessageData) => {
+    const message = {
+        ...messageData,
+        createdAt: firestore.Timestamp.now(),
+    };
+
+    // Upload image if there is one and change the URI to match CDN
     if (message.imageUri) {
-        // TODO: Get filename for image
-        const imageUrl = await uploadImage('teter.jpg', message.imageUri);
+        console.log('message has image');
+        const imageUrl = await uploadImage(message.imageUri);
         message.imageUri = imageUrl;
-
-        console.log('message has image', message);
     }
 
-    // Added to help debug
-    message.system = Platform.OS;
+    await roomsRef.doc(roomId).collection('messages').add(message);
 
-    firestore()
-        .collection('rooms')
-        .doc(roomId)
-        .collection('messages')
-        .add(message)
-        .then(() => {
-            console.log('this');
-            setLatestMessage(roomId, message.createdAt);
-        });
+    updateLatestMessage(roomId, message.createdAt);
 };
 
 /* 
-    Upload image to Firebase storage
+    Upload image to Firebase storage and get the URL
 */
 
-export const uploadImage = async (fileName: string, uri: string) => {
-    const reference = storage().ref(fileName);
-    const result = await reference.putFile(uri);
+export const uploadImage = async (uri: string) => {
+    // Upload image to unique folder to preserve filenames without overwriting
+    const uniqueFolder = uuid.v4();
+    const fileName = uri.split('/').pop();
 
+    // Create a reference to the image location
+    const reference = storage().ref('/images/' + uniqueFolder + '/' + fileName);
+
+    // Upload the image to Firebase Storage
+    await reference.putFile(uri);
+
+    // Retrieve the download URL for the uploaded file
     const url = await reference.getDownloadURL();
-
-    console.log('upload image', result);
-    console.log('upload image', url);
 
     return url;
 };
 
 /* Update timestamp for latest message */
-const setLatestMessage = (
+const updateLatestMessage = (
     roomId: string,
     timestamp: FirebaseFirestoreTypes.Timestamp,
 ) => {
-    firestore()
-        .collection('rooms')
-        .doc(roomId)
-        .update({ latestMessage: timestamp });
+    roomsRef.doc(roomId).update({ latestMessage: timestamp });
 };

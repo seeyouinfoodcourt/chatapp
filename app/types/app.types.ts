@@ -9,13 +9,21 @@ export type Room = {
 
 export type Author = {
     name: string;
-    avatar: string;
+    avatar?: string;
 };
 
 export type Message = {
-    id?: string;
+    id: string;
     author: Author;
     imageUri?: string;
     message: string;
-    createdAt?: FirebaseFirestoreTypes.Timestamp;
+    createdAt: FirebaseFirestoreTypes.Timestamp;
 };
+
+export type MessageData = {
+    author: Author;
+    message: string;
+    imageUri: string;
+};
+
+export type Provider = 'facebook' | 'google';

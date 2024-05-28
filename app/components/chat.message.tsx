@@ -1,29 +1,28 @@
-import { View, Text, StyleSheet, Image } from 'react-native';
-import React from 'react';
-import { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
+import { View, Text, StyleSheet, Image, Platform } from 'react-native';
+import React, { useEffect } from 'react';
 import { DateTime } from './date';
-import { Author } from '../types/app.types';
+import { Message } from '../types/app.types';
 
 type ChatMessageProps = {
-    author: Author;
-    imageUri?: string;
-    message: string;
-    timeStamp: FirebaseFirestoreTypes.Timestamp;
+    message: Message;
 };
+export const ChatMessage = React.memo((props: ChatMessageProps) => {
+    const { author, message, imageUri, createdAt } = props.message;
+    const avatarPlaceholder = require('../assets/img/avatar-placeholder.jpeg');
 
-export const ChatMessage = ({
-    author,
-    imageUri,
-    message,
-    timeStamp,
-}: ChatMessageProps) => {
+    useEffect(() => {
+        console.log('message rendered', Platform.OS, message);
+    });
+
     return (
         <View style={styles.container}>
-            {author.avatar ? (
-                <Image style={styles.avatar} source={{ uri: author.avatar }} />
-            ) : (
-                <View style={styles.avatar}></View>
-            )}
+            <Image
+                style={styles.avatar}
+                source={
+                    author.avatar ? { uri: author.avatar } : avatarPlaceholder
+                }
+                defaultSource={avatarPlaceholder}
+            />
             <View style={styles.message}>
                 <Text style={styles.author}>{author.name}</Text>
                 {imageUri ? (
@@ -35,11 +34,11 @@ export const ChatMessage = ({
                     />
                 ) : null}
                 <Text style={styles.content}>{message}</Text>
-                <DateTime timeStamp={timeStamp} style={styles.timeStamp} />
+                <DateTime timeStamp={createdAt} style={styles.timeStamp} />
             </View>
         </View>
     );
-};
+});
 
 const styles = StyleSheet.create({
     container: {
