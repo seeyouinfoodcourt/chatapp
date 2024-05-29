@@ -1,32 +1,45 @@
 import { View, Text, StyleSheet, Image, Platform } from 'react-native';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { DateTime } from './date';
 import { Message } from '../types/app.types';
 import { Colors } from '../assets/styles/colors';
 import { fonts } from '../assets/styles/fonts.styles';
+import { useAuthContext } from '../contexts/auth.context';
 
 type ChatMessageProps = {
     message: Message;
 };
 export const ChatMessage = React.memo((props: ChatMessageProps) => {
-    const { author, message, imageUri, createdAt } = props.message;
+    const { userCredentials } = useAuthContext();
+    const { author, authorId, message, imageUri, createdAt } = props.message;
+
+    const [isMyMessage, setIsMyMessage] = useState(false);
     const avatarPlaceholder = require('../assets/img/avatar-placeholder.jpeg');
 
+    useEffect(() => {
+        userCredentials?.uid === authorId && setIsMyMessage(true);
+    });
     useEffect(() => {
         console.log('message rendered', Platform.OS, message);
     });
 
     return (
-        <View style={styles.container}>
-            <Image
-                style={styles.avatar}
-                source={
-                    author.avatar ? { uri: author.avatar } : avatarPlaceholder
-                }
-                defaultSource={avatarPlaceholder}
-            />
+        <View style={[styles.container, isMyMessage && styles.myMessage]}>
+            {!isMyMessage && (
+                <Image
+                    style={styles.avatar}
+                    source={
+                        author.avatar
+                            ? { uri: author.avatar }
+                            : avatarPlaceholder
+                    }
+                    defaultSource={avatarPlaceholder}
+                />
+            )}
             <View style={styles.message}>
-                <Text style={styles.author}>{author.name}</Text>
+                {!isMyMessage && (
+                    <Text style={styles.author}>{author.name}</Text>
+                )}
                 {imageUri ? (
                     <Image
                         style={styles.image}
@@ -46,6 +59,9 @@ const styles = StyleSheet.create({
     container: {
         flexDirection: 'row',
         marginBottom: 16,
+    },
+    myMessage: {
+        alignSelf: 'flex-end',
     },
     avatar: {
         width: 40,

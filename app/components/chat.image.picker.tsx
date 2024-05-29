@@ -18,13 +18,13 @@ export const ChatImagePicker = ({ type, onPick }: ChatImagePickerProps) => {
 
         if (result.assets) {
             console.log('assets', result);
-            onPick(result.assets[0].uri);
+            if (result.assets[0].uri) onPick(result.assets[0].uri);
         } else if (result.didCancel) {
-            console.log('didcancel', result);
+            console.log('User cancelled image picker', result);
         } else if (result.errorCode) {
-            console.log('errorcode', result);
+            console.error('errorcode', result);
         } else if (result.errorMessage) {
-            console.log('errormessage', result);
+            console.error('errormessage', result);
         }
     };
 

@@ -5,4 +5,5 @@ export const Colors = {
     orange: 'orange',
     orangeDisabled: '#e8c882',
     background: 'green',
+    header: 'white',
 };

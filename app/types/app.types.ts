@@ -15,6 +15,7 @@ export type Author = {
 export type Message = {
     id: string;
     author: Author;
+    authorId?: string;
     imageUri?: string;
     message: string;
     createdAt: FirebaseFirestoreTypes.Timestamp;
@@ -22,6 +23,7 @@ export type Message = {
 
 export type MessageData = {
     author: Author;
+    authorId?: string;
     message: string;
     imageUri: string;
 };

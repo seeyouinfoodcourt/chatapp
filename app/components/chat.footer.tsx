@@ -45,6 +45,7 @@ export const ChatFooter = ({ roomId }: ChatFooterProps) => {
             message: text,
             imageUri: imageUri,
             author: author,
+            authorId: user?.uid,
         };
 
         sendMessage(roomId, message);

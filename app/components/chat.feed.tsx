@@ -13,7 +13,7 @@ type ChatFeedProps = {
 export const ChatFeed = ({ roomId }: ChatFeedProps) => {
     const [messages, setMessages] = useState<Message[]>([]);
     const [lastMessage, setLastMessage] = useState<Message>();
-    const [refreshing, setRefreshing] = useState(false);
+    const [refreshing, setRefreshing] = useState(true);
     const listRef = useRef<FlatList>(null);
 
     // Load new messages on scroll
@@ -45,6 +45,7 @@ export const ChatFeed = ({ roomId }: ChatFeedProps) => {
                 .map(change => ({
                     id: change.doc.id,
                     author: change.doc.data().author,
+                    authorId: change.doc.data().authorId,
                     message: change.doc.data().message,
                     imageUri: change.doc.data().imageUri,
                     createdAt: change.doc.data().createdAt,
