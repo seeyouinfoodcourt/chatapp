@@ -12,6 +12,7 @@ import { ChatFeed } from '../../components/chat.feed';
 
 import { ChatFooter } from '../../components/chat.footer';
 import { Text } from 'react-native';
+import { Colors } from '../../assets/styles/colors';
 
 type ChatRoomScreenProps = {
     navigation: NavigationProp<AppStackParamList>;
@@ -49,12 +50,12 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     chat: {
-        backgroundColor: 'green',
+        backgroundColor: Colors.background,
         flex: 1,
         padding: 8,
     },
     footer: {
-        backgroundColor: 'orange',
+        backgroundColor: Colors.orange,
         justifyContent: 'center',
         padding: 8,
         gap: 8,
@@ -62,15 +63,15 @@ const styles = StyleSheet.create({
     imagePreview: {
         height: 60,
         width: 60,
-        backgroundColor: '#fff',
+        backgroundColor: Colors.white,
     },
     removeImage: {
         padding: 4,
         position: 'absolute',
         top: -8,
         right: -8,
-        backgroundColor: '#fff',
-        borderColor: 'orange',
+        backgroundColor: Colors.white,
+        borderColor: Colors.orange,
         borderRadius: 50,
         borderWidth: 2,
     },

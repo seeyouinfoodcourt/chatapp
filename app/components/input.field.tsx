@@ -1,5 +1,6 @@
 import { TextInput, TextInputProps, StyleSheet } from 'react-native';
 import React from 'react';
+import { Colors } from '../assets/styles/colors';
 
 interface InputFieldProps extends TextInputProps {
     value: string;
@@ -36,9 +37,9 @@ export const InputField = ({
 const styles = StyleSheet.create({
     inputField: {
         borderWidth: 1,
-        borderColor: 'grey',
+        borderColor: Colors.grey,
         borderRadius: 8,
-        backgroundColor: '#fff',
+        backgroundColor: Colors.white,
         padding: 8,
         marginVertical: 4,
     },

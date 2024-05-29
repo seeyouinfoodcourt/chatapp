@@ -2,6 +2,8 @@ import { View, Text, StyleSheet, Image, Platform } from 'react-native';
 import React, { useEffect } from 'react';
 import { DateTime } from './date';
 import { Message } from '../types/app.types';
+import { Colors } from '../assets/styles/colors';
+import { fonts } from '../assets/styles/fonts.styles';
 
 type ChatMessageProps = {
     message: Message;
@@ -50,7 +52,7 @@ const styles = StyleSheet.create({
         height: 40,
         borderRadius: 25,
         marginRight: 8,
-        backgroundColor: '#fff',
+        backgroundColor: Colors.white,
     },
     image: {
         flex: 1,
@@ -59,13 +61,16 @@ const styles = StyleSheet.create({
         marginVertical: 4,
     },
     message: {
-        backgroundColor: '#fff',
+        backgroundColor: Colors.white,
         borderRadius: 8,
         padding: 8,
     },
     author: {
+        ...fonts.defaultFont,
         fontWeight: 'bold',
     },
-    content: {},
-    timeStamp: { textAlign: 'right', fontSize: 12 },
+    content: {
+        ...fonts.defaultFont,
+    },
+    timeStamp: { ...fonts.defaultFont, textAlign: 'right', fontSize: 12 },
 });

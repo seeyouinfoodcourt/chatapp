@@ -2,6 +2,7 @@ import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
+import { Colors } from '../assets/styles/colors';
 
 type ChatImagePickerProps = {
     type: 'library' | 'camera';
@@ -33,6 +34,7 @@ export const ChatImagePicker = ({ type, onPick }: ChatImagePickerProps) => {
                 name={type === 'camera' ? 'photo-camera' : 'image'}
                 size={24}
                 style={styles.icon}
+                color={Colors.black}
             />
         </TouchableOpacity>
     );
@@ -40,8 +42,12 @@ export const ChatImagePicker = ({ type, onPick }: ChatImagePickerProps) => {
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: '#fff',
+        backgroundColor: Colors.white,
         padding: 4,
+        height: 36,
+        width: 36,
+        alignItems: 'center',
+        justifyContent: 'center',
         borderRadius: 59,
         marginRight: 8,
     },

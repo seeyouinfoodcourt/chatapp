@@ -1,6 +1,8 @@
 import { View, TextInput, StyleSheet, Pressable } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import { Colors } from '../assets/styles/colors';
+import { fonts } from '../assets/styles/fonts.styles';
 
 type ChatInputProps = {
     text: string;
@@ -9,24 +11,29 @@ type ChatInputProps = {
 
 export const ChatInput = ({ text, onChangeText }: ChatInputProps) => {
     return (
-        <TextInput
-            style={styles.input}
-            placeholder="Start typing..."
-            value={text}
-            multiline
-            onChangeText={onChangeText}
-        />
+        <View style={styles.container}>
+            <TextInput
+                style={styles.input}
+                placeholder="Start typing..."
+                value={text}
+                multiline
+                onChangeText={onChangeText}
+            />
+        </View>
     );
 };
 
 const styles = StyleSheet.create({
-    input: {
+    container: {
         flex: 1,
-        maxHeight: 100,
-        backgroundColor: '#fff',
+        backgroundColor: Colors.white,
         borderRadius: 24,
+        maxHeight: 100,
+        justifyContent: 'center',
+    },
+    input: {
+        ...fonts.defaultFont,
+        padding: 0,
         paddingHorizontal: 16,
-        paddingBottom: 0,
-        paddingTop: 6,
     },
 });

@@ -2,6 +2,7 @@ import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import React from 'react';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { Room } from '../types/app.types';
+import { Colors } from '../assets/styles/colors';
 
 type ChatListCardProps = {
     room: Room;
@@ -29,7 +30,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         borderBottomWidth: 1,
-        borderBottomColor: 'grey',
+        borderBottomColor: Colors.grey,
     },
     image: {
         height: 50,

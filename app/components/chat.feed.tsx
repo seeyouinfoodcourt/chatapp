@@ -4,6 +4,7 @@ import { ChatMessage } from './chat.message';
 import { Message } from '../types/app.types';
 import { ActivityIndicator } from 'react-native';
 import { getMessages, loadNext } from '../services/firebase.service';
+import { Colors } from '../assets/styles/colors';
 
 type ChatFeedProps = {
     roomId: string;
@@ -76,7 +77,7 @@ export const ChatFeed = ({ roomId }: ChatFeedProps) => {
                         animating={refreshing}
                         style={{ flex: 1, marginVertical: 50 }}
                         size={'large'}
-                        color={'orange'}
+                        color={Colors.orange}
                     />
                 }
                 onEndReached={() => onEndReached()}

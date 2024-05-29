@@ -7,6 +7,7 @@ import { GoogleSignInButton } from '../../components/google.signin';
 import { ActivityIndicator, Alert, StyleSheet, Text, View } from 'react-native';
 import { useAuthContext } from '../../contexts/auth.context';
 import { Provider } from '../../types/app.types';
+import { Colors } from '../../assets/styles/colors';
 
 export const SigninScreen = () => {
     const { signInWithProvider } = useAuthContext();
@@ -35,7 +36,7 @@ export const SigninScreen = () => {
                         style={styles.activityIndicator}
                         animating={isLoading}
                         size={'large'}
-                        color={'orange'}
+                        color={Colors.orange}
                     />
                 </View>
             ) : (

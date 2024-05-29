@@ -7,6 +7,7 @@ import {
     ViewStyle,
 } from 'react-native';
 import React from 'react';
+import { Colors } from '../assets/styles/colors';
 
 type ButtonProps = {
     title: string;
@@ -23,7 +24,7 @@ export const Button = ({ title, onPress }: ButtonProps) => {
 
 const styles = StyleSheet.create({
     button: {
-        backgroundColor: 'orange',
+        backgroundColor: Colors.orange,
         padding: 16,
         borderRadius: 16,
         marginVertical: 8,
@@ -32,6 +33,6 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         textAlign: 'center',
         textTransform: 'uppercase',
-        color: '#fff',
+        color: Colors.white,
     },
 });

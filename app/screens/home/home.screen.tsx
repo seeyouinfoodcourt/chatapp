@@ -17,7 +17,7 @@ type HomeScreenProps = {
 export const HomeScreen = ({ navigation }: HomeScreenProps) => {
     const [rooms, setRooms] = useState<Room[]>([]);
     const { signOut } = useAuthContext();
-    const [refreshing, setRefreshing] = useState(false);
+    const [refreshing, setRefreshing] = useState(true);
 
     const fetchRooms = async () => {
         const rooms = await getRooms();

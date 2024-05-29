@@ -11,6 +11,7 @@ import { ChatInput } from './chat.input';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { sendMessage } from '../services/firebase.service';
 import auth from '@react-native-firebase/auth';
+import { Colors } from '../assets/styles/colors';
 
 type ChatFooterProps = {
     roomId: string;
@@ -81,7 +82,9 @@ export const ChatFooter = ({ roomId }: ChatFooterProps) => {
                     <Icon
                         name="send"
                         size={30}
-                        color={enableSend ? '#fff' : '#e8c882'}
+                        color={
+                            enableSend ? Colors.white : Colors.orangeDisabled
+                        }
                     />
                 </Pressable>
             </View>
@@ -93,15 +96,15 @@ const styles = StyleSheet.create({
     imagePreview: {
         height: 60,
         width: 60,
-        backgroundColor: '#fff',
+        backgroundColor: Colors.white,
     },
     removeImage: {
         padding: 4,
         position: 'absolute',
         top: -8,
         right: -8,
-        backgroundColor: '#fff',
-        borderColor: 'orange',
+        backgroundColor: Colors.white,
+        borderColor: Colors.orange,
         borderRadius: 50,
         borderWidth: 2,
     },
