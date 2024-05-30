@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Pressable } from 'react-native';
+import { View, Text, StyleSheet, Pressable, Platform } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { NativeStackHeaderProps } from '@react-navigation/native-stack';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -7,6 +7,7 @@ import { fonts } from '../assets/styles/fonts.styles';
 import { Colors } from '../assets/styles/colors';
 import { usePushMessageContext } from '../contexts/push.message.context';
 import NotificationToggle from './notification.toggle';
+import { Route } from '@react-navigation/native';
 
 type RouteParams = {
     roomId: string;
@@ -18,14 +19,16 @@ export const Header = ({
     back,
 }: NativeStackHeaderProps) => {
     const navigationState = navigation.getState();
-
-    const [roomId, setRoomId] = useState('');
+    const [roomdId, setRoomId] = useState('');
 
     useEffect(() => {
-        if (route.name === 'Chatroom') {
-            const params = route.params as RouteParams;
-            setRoomId(params.roomId);
-        }
+        const updateRoomId = async () => {
+            if (route.name === 'Chatroom') {
+                const params = route.params as RouteParams;
+                await setRoomId(params.roomId);
+            }
+        };
+        updateRoomId();
     }, []);
 
     return (
@@ -50,7 +53,7 @@ export const Header = ({
             {navigationState.index > 0 && (
                 <View style={styles.headerChild}>
                     <NotificationToggle
-                        topic={'room1'}
+                        topic={roomdId}
                         style={styles.notifications}
                     />
                 </View>

@@ -38,9 +38,9 @@ const NotificationToggle = ({ topic, style }: NotificationToggleProps) => {
 
     // Check if notifications are on
     useEffect(() => {
-        console.log('topic', topic);
+        console.log('notification toggle topic', topic);
         setIsSubscribed(checkTopicSubscription(topic));
-    }, []);
+    }, [topic]);
 
     return (
         <Pressable style={style} onPress={toggleNotifications}>

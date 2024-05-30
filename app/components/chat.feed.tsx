@@ -59,14 +59,9 @@ export const ChatFeed = ({ roomId }: ChatFeedProps) => {
 
     // Store last message in state
     useEffect(() => {
-        console.log('Messages updated', messages.length);
         const lastMessage = messages[messages.length - 1];
         setLastMessage(lastMessage);
     }, [messages]);
-
-    useEffect(() => {
-        console.log('Last message updated', lastMessage);
-    }, [lastMessage]);
 
     return (
         <>

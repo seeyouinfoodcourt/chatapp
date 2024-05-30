@@ -18,10 +18,7 @@ export const ChatMessage = React.memo((props: ChatMessageProps) => {
 
     useEffect(() => {
         userCredentials?.uid === authorId && setIsMyMessage(true);
-    });
-    useEffect(() => {
-        console.log('message rendered', Platform.OS, message);
-    });
+    }, []);
 
     return (
         <View style={[styles.container, isMyMessage && styles.myMessage]}>

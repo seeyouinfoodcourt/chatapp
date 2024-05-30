@@ -8,6 +8,7 @@ import {
 import { PermissionsAndroid, Platform } from 'react-native';
 import messaging from '@react-native-firebase/messaging';
 import { useAuthContext } from './auth.context';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type PushMessageContext = {
     pushEnabled: PushEnabled;
@@ -79,14 +80,42 @@ export const PushMessageProvider = ({ children }: PushMessageProviderProps) => {
 
     const checkTopicSubscription = (topic: string) => {
         const isSubscribed = pushTopics.includes(topic);
-        console.log('check sub issubscre', isSubscribed);
-        console.log(pushTopics);
-        console.log('checksub topic', topic);
+        console.log('checking subs', topic, isSubscribed);
         return isSubscribed;
     };
 
+    const storePushTopics = async () => {
+        try {
+            await AsyncStorage.setItem(
+                'pushTopics',
+                JSON.stringify(pushTopics),
+            );
+        } catch (e) {
+            console.error(e);
+        }
+    };
+
+    const getPushTopics = async () => {
+        console.log('get push topics triggered');
+        try {
+            const jsonValue = await AsyncStorage.getItem('pushTopics');
+            const parsedValue = jsonValue != null ? JSON.parse(jsonValue) : [];
+            console.log('getpushtopics jsonvalue', jsonValue);
+            console.log('getpushtopics parsedvaluevalue', parsedValue);
+            console.log(Array.isArray(parsedValue));
+            if (Array.isArray(parsedValue)) setPushTopics(parsedValue);
+        } catch (e) {
+            console.error(e);
+        }
+    };
+
+    useEffect(() => {
+        getPushTopics();
+    }, []);
+
     useEffect(() => {
         console.log('context pushtopics', pushTopics);
+        storePushTopics();
     }, [pushTopics]);
 
     /**
