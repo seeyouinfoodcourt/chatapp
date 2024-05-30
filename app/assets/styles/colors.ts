@@ -1,10 +1,10 @@
 export const Colors = {
-    black: '#000000',
-    white: '#ffffff',
+    black: '#2F2D2E',
+    white: '#FFF',
     grey: 'grey',
-    orange: 'orange',
+    orange: '#F39426',
     orangeDisabled: '#e8c882',
-    background: 'green',
-    header: 'white',
-    headerBackground: 'darkorange',
+    background: '#EEEEEE',
+    header: '#FFFDED',
+    headerBackground: '#F39426',
 };

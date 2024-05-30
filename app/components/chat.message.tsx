@@ -77,6 +77,9 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.white,
         borderRadius: 8,
         padding: 8,
+        shadowColor: 'black',
+        shadowOpacity: 0.2,
+        shadowOffset: { width: 0, height: 1 },
     },
     author: {
         ...fonts.defaultFont,
