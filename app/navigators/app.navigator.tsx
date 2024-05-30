@@ -4,12 +4,14 @@ import React from 'react';
 import { HomeScreen } from '../screens/home/home.screen';
 import { ChatRoomScreen } from '../screens/chatroom/chatroom.screen';
 import { Colors } from '../assets/styles/colors';
+import { Header } from '../components/header';
 
 const Stack = createNativeStackNavigator<AppStackParamList>();
 
 export const AppNavigator = () => {
     return (
-        <Stack.Navigator>
+        <Stack.Navigator
+            screenOptions={{ header: props => <Header {...props} /> }}>
             <Stack.Screen
                 name="Home"
                 component={HomeScreen}

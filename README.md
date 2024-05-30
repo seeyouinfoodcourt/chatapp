@@ -38,5 +38,19 @@ yarn android
 
 # Features
 
--   Authorization with Facebook and Google
--
+-   Firebase Authorization with Facebook and Google
+-   Firebase Firestore database and real time updates
+-   Firebase Storage for file storage
+
+# To Do
+
+-   screens/signin/signin.screen.tsx
+    -   Better error handling
+-   components/chat.feed.tsx
+    -   Make the use aware when there is no more data left to fetch when fetching older messages
+-   Firebase Cloud Messaging
+    -   Make API to send push messages
+
+# Contact
+
+mis@pentia.dk

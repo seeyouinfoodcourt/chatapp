@@ -9,6 +9,7 @@ import { ChatListCard } from '../../components/chat.list.card';
 import { sharedStyles } from '../../assets/styles/shared.styles';
 import { getRooms } from '../../services/firebase.service';
 import { Room } from '../../types/app.types';
+import { Header } from '../../components/header';
 
 type HomeScreenProps = {
     navigation: NavigationProp<AppStackParamList>;

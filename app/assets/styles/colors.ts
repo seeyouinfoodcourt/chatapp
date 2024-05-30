@@ -6,4 +6,5 @@ export const Colors = {
     orangeDisabled: '#e8c882',
     background: 'green',
     header: 'white',
+    headerBackground: 'darkorange',
 };

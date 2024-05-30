@@ -31,10 +31,7 @@ export const ChatRoomScreen = ({ route }: ChatRoomScreenProps) => {
     }
 
     return (
-        <KeyboardAvoidingView
-            style={styles.container}
-            // behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        >
+        <KeyboardAvoidingView style={styles.container}>
             <View style={styles.chat}>
                 <ChatFeed roomId={roomId} />
             </View>
