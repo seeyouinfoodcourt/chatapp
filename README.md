@@ -38,9 +38,12 @@ yarn android
 
 # Features
 
+-   Send and receive messages in predefined chat rooms
+-   Image upload from gallery or camera
 -   Firebase Authorization with Facebook and Google
 -   Firebase Firestore database and real time updates
 -   Firebase Storage for file storage
+-   Firebase Cloud Messaging partial integration - Android only. User can subscribe to topics and receive messages sent from FCM.
 
 # To Do
 
@@ -50,6 +53,8 @@ yarn android
     -   Make the use aware when there is no more data left to fetch when fetching older messages
 -   Firebase Cloud Messaging
     -   Make API to send push messages
+    -   Use deeplinks to send the user to the correct room when message is pushed
+    -   Make it support ios
 
 # Contact
 

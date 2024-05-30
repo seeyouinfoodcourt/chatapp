@@ -15,6 +15,10 @@ GoogleSignin.configure({
 
 enableScreens();
 
+messaging().setBackgroundMessageHandler(async remoteMessage => {
+    console.log('Message handled in the background!', remoteMessage);
+});
+
 function App(): React.JSX.Element {
     useEffect(() => {
         const unsubscribe = messaging().onMessage(async remoteMessage => {
