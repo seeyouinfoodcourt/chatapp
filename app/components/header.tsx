@@ -78,12 +78,11 @@ const styles = StyleSheet.create({
     headerChild: {
         justifyContent: 'center',
         flex: 1,
-        padding: 8,
     },
     right: {
         backgroundColor: 'blue',
     },
-    back: { alignSelf: 'flex-start' },
+    back: { alignSelf: 'flex-start', padding: 16 },
     title: {
         ...fonts.defaultFont,
         color: Colors.white,
@@ -93,6 +92,7 @@ const styles = StyleSheet.create({
     },
 
     notifications: {
+        padding: 16,
         alignSelf: 'flex-end',
     },
 });

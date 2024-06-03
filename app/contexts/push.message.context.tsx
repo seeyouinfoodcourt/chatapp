@@ -5,20 +5,21 @@ import {
     useEffect,
     useState,
 } from 'react';
-import { PermissionsAndroid, Platform } from 'react-native';
-import messaging from '@react-native-firebase/messaging';
+import { Alert } from 'react-native';
 import { useAuthContext } from './auth.context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {
+    getPushToken,
+    requestPermission,
+    subscribeToTopic,
+    unsubscribeFromTopic,
+} from '../services/push.service';
 
 type PushMessageContext = {
-    pushEnabled: PushEnabled;
-    requestPermission: () => Promise<boolean>;
-    subscribeToTopic: (topic: string) => void;
-    unsubscribeFromTopic: (topic: string) => void;
+    subscribeToPushTopic: (topic: string) => void;
+    unsubscribeFromPushTopic: (topic: string) => void;
     checkTopicSubscription: (topic: string) => boolean;
 };
-
-type PushEnabled = boolean | undefined;
 
 type PushMessageProviderProps = {
     children: ReactNode;
@@ -28,95 +29,62 @@ const PushMessageContext = createContext({} as PushMessageContext);
 
 export const PushMessageProvider = ({ children }: PushMessageProviderProps) => {
     const { userCredentials } = useAuthContext();
-    const [pushEnabled, setPushEnabled] = useState<PushEnabled>(undefined);
+    const [pushEnabled, setPushEnabled] = useState(false);
     const [pushTopics, setPushTopics] = useState<string[]>([]);
+    const storageKey = userCredentials?.uid + '/pushSubscriptions';
 
-    const requestPermission = async () => {
-        let enabled = false;
-
-        if (Platform.OS === 'ios') {
-            const authStatus = await messaging().requestPermission();
-            enabled =
-                authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
-                authStatus === messaging.AuthorizationStatus.PROVISIONAL;
-        } else if (Platform.OS === 'android' && Platform.Version >= 33) {
-            const hasAndroidPermission = await PermissionsAndroid.check(
-                PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
-            );
-
-            if (!hasAndroidPermission) {
-                const requestStatus = await PermissionsAndroid.request(
-                    PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
-                );
-
-                enabled = requestStatus === 'granted';
-            } else {
-                enabled = true;
-            }
-        } else {
-            enabled = true;
-        }
-
-        return enabled;
-    };
-
-    const subscribeToTopic = async (topic: string) => {
-        if (checkTopicSubscription(topic)) {
-            return;
-        }
+    const subscribeToPushTopic = async (topic: string) => {
         try {
-            await messaging().subscribeToTopic(topic);
-            setPushTopics(prevState => [...prevState, topic]);
+            console.log('context subscribe', topic);
+            await subscribeToTopic(topic);
+            setPushTopics(prev => {
+                storePushTopics([...prev, topic]);
+                return [...prev, topic];
+            });
         } catch (error) {
-            console.error(error);
+            Alert.alert('Push error', 'Failed to subscribe');
         }
     };
 
-    const unsubscribeFromTopic = async (topic: string) => {
-        await messaging().unsubscribeFromTopic(topic);
-        const topics = pushTopics.filter(element => element !== topic);
-        setPushTopics(topics);
+    const unsubscribeFromPushTopic = async (topic: string) => {
+        try {
+            await unsubscribeFromTopic(topic);
+            const topics = pushTopics.filter(element => element !== topic);
+            setPushTopics(topics);
+            storePushTopics(topics);
+        } catch (error) {
+            Alert.alert('Push error', 'Failed to unsubscribe');
+        }
     };
 
+    // Store the push topic array in async storage
+    const storePushTopics = async (topics: string[]) => {
+        try {
+            console.log('store topics try', topics, storageKey);
+            await AsyncStorage.setItem(storageKey, JSON.stringify(topics));
+        } catch (e) {
+            console.error(e);
+        }
+    };
+    //Check if topic is already in subscription array
     const checkTopicSubscription = (topic: string) => {
         const isSubscribed = pushTopics.includes(topic);
         console.log('checking subs', topic, isSubscribed);
         return isSubscribed;
     };
 
-    const storePushTopics = async () => {
-        try {
-            await AsyncStorage.setItem(
-                'pushTopics',
-                JSON.stringify(pushTopics),
-            );
-        } catch (e) {
-            console.error(e);
-        }
-    };
-
-    const getPushTopics = async () => {
-        console.log('get push topics triggered');
-        try {
-            const jsonValue = await AsyncStorage.getItem('pushTopics');
-            const parsedValue = jsonValue != null ? JSON.parse(jsonValue) : [];
-            console.log('getpushtopics jsonvalue', jsonValue);
-            console.log('getpushtopics parsedvaluevalue', parsedValue);
-            console.log(Array.isArray(parsedValue));
-            if (Array.isArray(parsedValue)) setPushTopics(parsedValue);
-        } catch (e) {
-            console.error(e);
-        }
-    };
-
+    // Load push topics from async storage
     useEffect(() => {
-        getPushTopics();
-    }, []);
-
-    useEffect(() => {
-        console.log('context pushtopics', pushTopics);
-        storePushTopics();
-    }, [pushTopics]);
+        const loadPushTopics = async () => {
+            console.log('get push topics triggered', storageKey);
+            const storedTopics = await AsyncStorage.getItem(storageKey);
+            console.log('asyncresult', storedTopics);
+            if (storedTopics) {
+                setPushTopics(JSON.parse(storedTopics));
+            }
+        };
+        loadPushTopics();
+    }, [userCredentials]);
 
     /**
      * Ask for push permissions when user is logged in
@@ -128,7 +96,7 @@ export const PushMessageProvider = ({ children }: PushMessageProviderProps) => {
         const checkPushPermission = async () => {
             const enabled = await requestPermission();
             if (enabled) {
-                const token = await messaging().getToken();
+                const token = await getPushToken();
                 console.log('token', token);
             }
             setPushEnabled(enabled);
@@ -139,10 +107,8 @@ export const PushMessageProvider = ({ children }: PushMessageProviderProps) => {
     return (
         <PushMessageContext.Provider
             value={{
-                pushEnabled,
-                requestPermission,
-                subscribeToTopic,
-                unsubscribeFromTopic,
+                subscribeToPushTopic,
+                unsubscribeFromPushTopic,
                 checkTopicSubscription,
             }}>
             {children}

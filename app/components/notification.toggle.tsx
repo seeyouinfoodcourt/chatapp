@@ -19,19 +19,17 @@ type NotificationToggleProps = {
 const NotificationToggle = ({ topic, style }: NotificationToggleProps) => {
     const [isSubscribed, setIsSubscribed] = useState(false);
     const {
-        pushEnabled,
-        requestPermission,
-        subscribeToTopic,
-        unsubscribeFromTopic,
+        subscribeToPushTopic,
+        unsubscribeFromPushTopic,
         checkTopicSubscription,
     } = usePushMessageContext();
 
     const toggleNotifications = async () => {
         if (!isSubscribed) {
-            subscribeToTopic(topic);
+            subscribeToPushTopic(topic);
             setIsSubscribed(true);
         } else {
-            unsubscribeFromTopic(topic);
+            unsubscribeFromPushTopic(topic);
             setIsSubscribed(false);
         }
     };

@@ -3,6 +3,7 @@ import React from 'react';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { Room } from '../types/app.types';
 import { Colors } from '../assets/styles/colors';
+import { fonts } from '../assets/styles/fonts.styles';
 
 type ChatListCardProps = {
     room: Room;
@@ -40,11 +41,14 @@ const styles = StyleSheet.create({
     },
     textContainer: {},
     name: {
+        ...fonts.defaultFont,
         fontWeight: 'bold',
         fontSize: 16,
         marginBottom: 2,
     },
-    description: {},
+    description: {
+        ...fonts.defaultFont,
+    },
     chevron: {
         marginLeft: 'auto',
     },

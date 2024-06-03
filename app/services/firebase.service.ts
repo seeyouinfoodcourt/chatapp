@@ -5,7 +5,7 @@ import storage from '@react-native-firebase/storage';
 import { Message, MessageData } from '../types/app.types';
 import uuid from 'react-native-uuid';
 
-const queryLimit = 10;
+const queryLimit = 50;
 const roomsRef = firestore().collection('rooms');
 
 /**
