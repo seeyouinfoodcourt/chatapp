@@ -82,7 +82,11 @@ const styles = StyleSheet.create({
     right: {
         backgroundColor: 'blue',
     },
-    back: { alignSelf: 'flex-start', padding: 16 },
+    back: {
+        alignSelf: 'flex-start',
+        paddingHorizontal: 16,
+        paddingVertical: 8,
+    },
     title: {
         ...fonts.defaultFont,
         color: Colors.white,
@@ -92,7 +96,8 @@ const styles = StyleSheet.create({
     },
 
     notifications: {
-        padding: 16,
+        paddingHorizontal: 16,
+        paddingVertical: 8,
         alignSelf: 'flex-end',
     },
 });
