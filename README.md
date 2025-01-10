@@ -58,4 +58,6 @@ yarn android
 
 # Contact
 
+For any questions or inqueryies, please contact
+
 mis@pentia.dk
